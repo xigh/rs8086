@@ -4,7 +4,7 @@ use std::{
     io::Read,
 };
 
-use super::{Result, Device, MemMap, IOMap, MemAddrT, OpSizeT, MemSize, MemOps, Config, dump};
+use super::{Result, Device, MemMap, IOMap, MemAddrT, OpSizeT, OpSize, MemOps, Config, dump};
 
 pub struct DeviceROM {
     start: MemAddrT,
@@ -40,7 +40,7 @@ impl MemOps for DeviceROM {
         "ROM".to_string()
     }
 
-    fn read(&self, addr: MemAddrT, sz: MemSize) -> OpSizeT {
+    fn read(&self, addr: MemAddrT, sz: OpSize) -> OpSizeT {
         let addr = addr as usize;
         let offset = addr.wrapping_sub(self.start as usize);
 
@@ -51,11 +51,11 @@ impl MemOps for DeviceROM {
         let b0 = self.bytes[offset] as OpSizeT;
 
         match sz {
-            MemSize::Byte => {
+            OpSize::Byte => {
                 println!("device_rom: read addr={:05x}, offset={:05x}, sz={:?}, val={:02x}", addr, offset, sz, b0);
                 b0
             },
-            MemSize::Word => {
+            OpSize::Word => {
                 if offset + 1 >= self.bytes.len() {
                     println!("device_rom: read addr={:05x}, sz={:?} [out of range]", addr, sz);
                     return 0;
@@ -68,7 +68,7 @@ impl MemOps for DeviceROM {
         }
     }
 
-    fn write(&mut self, addr: MemAddrT, data: OpSizeT, sz: MemSize) {
+    fn write(&mut self, addr: MemAddrT, data: OpSizeT, sz: OpSize) {
         // do nothing
     }
 }

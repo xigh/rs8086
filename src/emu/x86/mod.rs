@@ -6,14 +6,20 @@ use std::{cmp::Ordering, collections::HashMap, fs::File, io::Read};
 use crate::{inst_to_string, Result};
 use lib8086::{Arg, Cc, Decoder, Inst, Op, Reg16, Reg8, Sreg, MemAddrT, IoAddrT, OpSizeT};
 
+#[derive(Debug, Clone, Copy)]
+pub enum OpSize {
+    Byte,
+    Word,
+}
+
 mod mem;
-use mem::{MemOps, MemMap, MemSize};
+use mem::{MemOps, MemMap};
 
 mod dump;
 pub use dump::dump;
 
 mod io;
-use io::{IOMap, IoSize};
+use io::{IOOps, IOMap};
 
 mod exec;
 mod args;
@@ -233,21 +239,21 @@ impl Cpu {
         self.halted
     }
 
-    pub fn read_mem(&self, seg: Sreg, off: u16, sz: MemSize) -> Option<OpSizeT> {
+    pub fn read_mem(&self, seg: Sreg, off: u16, sz: OpSize) -> Option<OpSizeT> {
         let ea = self.calc_ea(seg, off);
         self.mem_map.read(ea, sz)
     }
 
-    pub fn write_mem(&mut self, seg: Sreg, off: u16, val: OpSizeT, sz: MemSize) {
+    pub fn write_mem(&mut self, seg: Sreg, off: u16, val: OpSizeT, sz: OpSize) {
         let ea = self.calc_ea(seg, off);
         self.mem_map.write(ea, val as u16, sz);
     }
 
-    fn io_read(&self, port: u16, sz: IoSize) -> OpSizeT {
+    pub fn read_io(&self, port: u16, sz: OpSize) -> OpSizeT {
         self.io_map.read(port, sz).unwrap_or(OpSizeT::default())
     }
 
-    fn io_write(&mut self, port: IoAddrT, val: OpSizeT, sz: IoSize) {
+    pub fn write_io(&mut self, port: IoAddrT, val: OpSizeT, sz: OpSize) {
         self.io_map.write(port, val, sz);
     }
 }

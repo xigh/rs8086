@@ -11,7 +11,7 @@ pub use dis::inst_to_string;
 mod x86;
 pub use x86::{Cpu, Config};
 
-pub use lib8086::{Arg, Cc, Decoder, Inst, Op, Reg16, Reg8, Rep, Sreg};
+pub use lib8086::{Arg, Cc, Decoder, Inst, Op, Reg16, Reg8, Rep, Sreg, OpSizeT};
 
 fn main() -> Result<()> {
     println!("8086 Emulator");

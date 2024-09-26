@@ -1,4 +1,4 @@
-use super::{Result, IOMap, MemAddrT, MemMap, MemOps, MemSize, OpSizeT, Config, dump};
+use super::{Result, IOMap, MemAddrT, MemMap, MemOps, OpSize, OpSizeT, Config, dump};
 
 mod ram;
 use ram::DeviceRAM;

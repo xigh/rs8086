@@ -1,8 +1,21 @@
 use lib8086::Arg;
 
-use super::Cpu;
+use super::{Cpu, OpSize};
 
 impl Cpu {
+    pub fn arg_size(&self, arg: &Arg) -> OpSize {
+        match arg {
+            Arg::Reg8(_) => OpSize::Byte,
+            Arg::Reg16(_) => OpSize::Word,
+            Arg::Imm8(_) => OpSize::Byte,
+            Arg::Uimm8(_) => OpSize::Byte,
+            Arg::Imm16(_) => OpSize::Word,
+            Arg::Uimm16(_) => OpSize::Word,
+            Arg::Sreg(_) => OpSize::Word,
+            _ => unimplemented!(),
+        }
+    }
+
     pub fn read_arg(&self, arg: &Arg) -> u16 {
         match arg {
             Arg::Reg8(reg) => {

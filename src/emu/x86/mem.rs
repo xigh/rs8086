@@ -1,19 +1,12 @@
 use std::collections::HashMap;
 use lib8086::Op;
 
-use super::{MemAddrT, OpSizeT};
-
-#[derive(Debug, Clone, Copy)]
-pub enum MemSize {
-    Byte,
-    Word,
-    // Dword,
-}
+use super::{MemAddrT, OpSizeT, OpSize};
 
 pub trait MemOps {
     fn name(&self) -> String;
-    fn read(&self, addr: MemAddrT, sz: MemSize) -> OpSizeT;
-    fn write(&mut self, addr: MemAddrT, data: OpSizeT, sz: MemSize);
+    fn read(&self, addr: MemAddrT, sz: OpSize) -> OpSizeT;
+    fn write(&mut self, addr: MemAddrT, data: OpSizeT, sz: OpSize);
     // todo: atomic operations
 }
 
@@ -33,7 +26,7 @@ impl MemMap {
         self.map.insert((start, end), dev);
     }
 
-    pub fn read(&self, addr: MemAddrT, sz: MemSize) -> Option<OpSizeT> {
+    pub fn read(&self, addr: MemAddrT, sz: OpSize) -> Option<OpSizeT> {
         for (range, dev) in self.map.iter() {
             if addr >= range.0 && addr <= range.1 {
                 return Some(dev.read(addr, sz));
@@ -42,7 +35,7 @@ impl MemMap {
         None
     }
     
-    pub fn write(&mut self, addr: MemAddrT, data: OpSizeT, sz: MemSize) -> bool {
+    pub fn write(&mut self, addr: MemAddrT, data: OpSizeT, sz: OpSize) -> bool {
         for (range, dev) in self.map.iter_mut() {
             if addr >= range.0 && addr <= range.1 {
                 dev.write(addr, data, sz);

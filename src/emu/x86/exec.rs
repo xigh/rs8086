@@ -4,7 +4,7 @@ use lib8086::{Inst, Op, Sreg, Reg16, Cc};
 
 use crate::x86::MemAddrT;
 
-use super::{Cpu, Flags, MemSize, Decoder, inst_to_string};
+use super::{Cpu, Flags, OpSize, Decoder, inst_to_string};
 
 impl Cpu {
     pub fn next_inst(&mut self) -> Inst {
@@ -18,7 +18,7 @@ impl Cpu {
             type Item = u8;
 
             fn next(&mut self) -> Option<u8> {
-                let Some(v) = self.cpu.read_mem(Sreg::CS, self.ip, MemSize::Byte) else {
+                let Some(v) = self.cpu.read_mem(Sreg::CS, self.ip, OpSize::Byte) else {
                     return None;
                 };
                 self.bytes.push(v as u8);
@@ -108,14 +108,14 @@ impl Cpu {
                 let ss = self.read_sreg(Sreg::SS);
                 println!(" - PUSH: sp={:04x}", sp);
 
-                self.write_mem(Sreg::SS, sp, v, MemSize::Word);
+                self.write_mem(Sreg::SS, sp, v, OpSize::Word);
 
                 self.write_reg16(Reg16::SP, sp.wrapping_sub(2));
             }
             Op::Pop(a1) => {
                 let sp = self.read_reg16(Reg16::SP);
                 println!(" - POP: sp={:04x}", sp);
-                let v = self.read_mem(Sreg::SS, sp, MemSize::Word).unwrap();
+                let v = self.read_mem(Sreg::SS, sp, OpSize::Word).unwrap();
                 println!(" - POP {:?} <- {:04x}", a1, v);
                 self.write_arg(&a1, v as u16);
                 self.write_reg16(Reg16::SP, sp.wrapping_sub(2));
@@ -178,8 +178,7 @@ impl Cpu {
             Op::Out(a1, a2) => {
                 let port = self.read_arg(&a1);
                 let val = self.read_arg(&a2);
-                println!("OUT: port {:04X} <- {:04X}", port, val);
-                // todo: implement
+                self.write_io(port, val, OpSize::Byte);
             }
 
             Op::Hlt => {
