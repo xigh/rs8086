@@ -1,0 +1,6 @@
+/target
+/torm
+*.pdf
+*.old
+*.todo
+/tests/*.bin

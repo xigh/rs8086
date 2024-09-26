@@ -1,0 +1,21 @@
+[package]
+name = "rs8086"
+version = "0.1.0"
+edition = "2021"
+authors = ["Philippe Anel <zexigh@gmail.com>"]
+
+[lib]
+name = "lib8086"
+path = "src/lib/lib.rs"
+
+[[bin]]
+name = "emu8086"
+path = "src/emu/main.rs"
+
+[[bin]]
+name = "as8086"
+path = "src/as/main.rs"
+
+[[bin]]
+name = "dis8086"
+path = "src/dis/main.rs"
