@@ -1,3 +1,5 @@
+; nasm -f bin -o tests/1.bin tests/1.asm
+
 cpu 8086
 bits 16
 org 0
