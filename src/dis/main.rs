@@ -31,7 +31,7 @@ fn disasm(file: &str) -> Result<()> {
             .iter()
             .map(|b| format!("{:02x}", *b))
             .collect::<Vec<String>>();
-        println!("{:04X} {:16} {}", 
+        println!("{:05X} {:16} {}", // ! 05x -> 1MB max
             pc,
             bytes.join(" "),
             inst_to_string(pc as u32, &inst));

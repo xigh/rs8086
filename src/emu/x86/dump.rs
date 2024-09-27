@@ -1,29 +1,34 @@
+use tracing::info;
+
 pub fn dump(buf: &[u8], origin: usize, len: usize) {
     let len = len.min(buf.len());
     let mut i = 0;
+    let mut line = vec![];
+
     while i < len {
-        print!("{:08X} ", origin + i);
+        line.push(format!("{:08X} ", origin + i));
         for j in 0..16 {
             if i + j < len {
-                print!("{:02X} ", buf[i + j]);
+                line.push(format!("{:02X} ", buf[i + j]));
             } else {
-                print!("   ");
+                line.push(format!("   "));
             }
         }
-        print!(" ");
+        line.push(format!(" "));
         for j in 0..16 {
             if i + j < len {
                 let c = buf[i + j];
                 if c >= 32 && c < 127 {
-                    print!("{}", c as char);
+                    line.push(format!("{}", c as char));
                 } else {
-                    print!(".");
+                    line.push(format!("."));
                 }
             } else {
-                print!(" ");
+                line.push(format!(" "));
             }
         }
-        println!();
+        info!("{}", line.join(""));
+        line.clear();
         i += 16;
     }
 }

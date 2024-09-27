@@ -2,7 +2,7 @@
 name = "rs8086"
 version = "0.1.0"
 edition = "2021"
-authors = ["Philippe Anel <zexigh@gmail.com>"]
+authors = ["Philippe Anel <philippe@dremml.com>"]
 
 [lib]
 name = "lib8086"
@@ -19,3 +19,7 @@ path = "src/as/main.rs"
 [[bin]]
 name = "dis8086"
 path = "src/dis/main.rs"
+
+[dependencies]
+tracing = "0.1.40"
+tracing-subscriber = "0.3.18"

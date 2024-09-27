@@ -1,5 +1,7 @@
 use std::cmp::Ordering;
 
+use tracing::{debug, trace};
+
 use lib8086::{Inst, Op, Sreg, Reg16, Cc};
 
 use crate::x86::MemAddrT;
@@ -30,7 +32,7 @@ impl Cpu {
         let ip = self.read_ip();
         let pc = self.calc_ea(Sreg::CS, ip);
 
-        println!("exec: pc={:04x}", pc);
+        trace!("exec: pc={:04x}", pc);
 
         let mut ea = EA { ip, cpu: self, bytes: vec![] };
         let mut dec = Decoder::new(&mut ea);
@@ -54,7 +56,7 @@ impl Cpu {
 
     pub fn tick(&mut self) {
         let inst = self.next_inst();
-        println!("tick: inst={:?}", inst);
+        debug!("tick: inst={:?}", inst);
 
         let mut nip = self.read_ip() + inst.size as u16;
         match inst.op {
@@ -106,7 +108,7 @@ impl Cpu {
                 let v = self.read_arg(&a1);
                 let sp = self.read_reg16(Reg16::SP);
                 let ss = self.read_sreg(Sreg::SS);
-                println!(" - PUSH: sp={:04x}", sp);
+                trace!(" - PUSH: sp={:04x}", sp);
 
                 self.write_mem(Sreg::SS, sp, v, OpSize::Word);
 
@@ -114,9 +116,9 @@ impl Cpu {
             }
             Op::Pop(a1) => {
                 let sp = self.read_reg16(Reg16::SP);
-                println!(" - POP: sp={:04x}", sp);
+                trace!(" - POP: sp={:04x}", sp);
                 let v = self.read_mem(Sreg::SS, sp, OpSize::Word).unwrap();
-                println!(" - POP {:?} <- {:04x}", a1, v);
+                trace!(" - POP {:?} <- {:04x}", a1, v);
                 self.write_arg(&a1, v as u16);
                 self.write_reg16(Reg16::SP, sp.wrapping_sub(2));
             }
@@ -152,7 +154,7 @@ impl Cpu {
                             && (self.is_flag_set(Flags::S) == self.is_flag_set(Flags::O))
                     }
                 };
-                println!(" - J: cc={:?} cond={}", cc, cond);
+                trace!(" - J: cc={:?} cond={}", cc, cond);
                 if cond {
                     nip = nip.wrapping_add(disp as u16);
                 }
@@ -166,14 +168,14 @@ impl Cpu {
             Op::Xchg(_, _) => todo!(),
             Op::Mov(a1, a2) => {
                 let v2 = self.read_arg(&a2);
-                println!("MOV {:?} <- {:04X}", a1, v2);
+                trace!("MOV {:?} <- {:04X}", a1, v2);
                 self.write_arg(&a1, v2);
             }
             Op::Lea(_, _) => todo!(),
             Op::In(a1, a2) => {
                 let port = self.read_arg(&a1);
                 let val = self.read_arg(&a2);
-                println!("IN: port {:04X} -> {:04X}", port, val);
+                trace!("IN: port {:04X} -> {:04X}", port, val);
             }
             Op::Out(a1, a2) => {
                 let port = self.read_arg(&a1);
@@ -210,7 +212,6 @@ impl Cpu {
             Op::Invalid(_) => todo!(),
         }
 
-        println!(" - write_ip: nip={:04x}", nip);
         self.write_ip(nip);
     }
 }

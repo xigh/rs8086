@@ -3,6 +3,8 @@
 use core::panic;
 use std::{cmp::Ordering, collections::HashMap, fs::File, io::Read};
 
+use tracing::debug;
+
 use crate::{inst_to_string, Result};
 use lib8086::{Arg, Cc, Decoder, Inst, Op, Reg16, Reg8, Sreg, MemAddrT, IoAddrT, OpSizeT};
 
@@ -196,6 +198,7 @@ impl Cpu {
     }
 
     pub fn write_ip(&mut self, val: u16) {
+        debug!("write_ip: val={:04x}", val);
         self.ip = val;
     }
 

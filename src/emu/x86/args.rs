@@ -1,5 +1,7 @@
 use lib8086::Arg;
 
+use tracing::debug;
+
 use super::{Cpu, OpSize};
 
 impl Cpu {
@@ -20,12 +22,12 @@ impl Cpu {
         match arg {
             Arg::Reg8(reg) => {
                 let b = self.read_reg8(*reg);
-                println!(" - read-arg: reg8 {:?} = {:02X}", reg, b);
+                debug!("read-arg: reg8 {:?} = {:02X}", reg, b);
                 b as u16
             }
             Arg::Reg16(reg) => {
                 let w = self.read_reg16(*reg);
-                println!(" - read-arg: reg16 {:?} = {:04X}", reg, w);
+                debug!("read-arg: reg16 {:?} = {:04X}", reg, w);
                 w
             }
             Arg::Imm8(imm) => *imm as u16,
@@ -41,11 +43,11 @@ impl Cpu {
         match arg {
             Arg::Reg8(reg) => {
                 let val = val as u8;
-                println!(" - write-arg: reg8 {:?} = {:02X}", reg, val);
+                debug!("write-arg: reg8 {:?} = {:02X}", reg, val);
                 self.write_reg8(*reg, (val & 0xff) as u8);
             }
             Arg::Reg16(reg) => {
-                println!(" - write-arg: reg16 {:?} = {:04X}", reg, val);
+                debug!("write-arg: reg16 {:?} = {:04X}", reg, val);
                 self.write_reg16(*reg, val);
             }
             Arg::Imm8(_) => panic!("Cannot write to imm8"),
