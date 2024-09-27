@@ -9,7 +9,7 @@ emulating it in Rust.
 
 It does not rely on any external libraries, all the logic is implemented in Rust (except for logging of course).
 
-It is expected to come with a lot of bugs at the beginning. If you want to contribute, please do so, but keep in mind that I'll work on it everyday and it will take some time to reach a stable state.
+It is expected to come with a lot of bugs at the beginning. If you want to contribute, please do so, but keep in mind that I'll work on it everyday it will change a lot even if it will take some time to reach a stable state.
 
 I plan to add : 
 
