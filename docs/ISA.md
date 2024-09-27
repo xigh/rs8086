@@ -152,3 +152,12 @@ else:
     CF = 0
 AL = AL AND 0FH
 ```
+
+### AAD - ASCII adjust after division
+
+Corrects result in AH and AL after division when working with BCD values.
+
+```
+AL = (AL + AH * 10) AND 0FH
+AH = 0
+```
