@@ -5,6 +5,8 @@
 - GENERAL PURPOSE REGISTERS:  AH, AL, BL, BH, CH, CL, DH, DL,
         AX, BX, CX, DX, DI, SI, BP, SP.
 
+- FLAGS: CF, PF, AF, ZF, SF, TF, IF, DF, OF.
+
 - SEGMENT REGISTERS: DS, ES, SS, and only as second operand: CS.
 
 - MEMORY ADDRESSING: [BX+SI], [BX+DI], [BP+SI], [BP+DI], [SI], [DI], [BP], [BX] (todo)
