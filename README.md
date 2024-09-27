@@ -11,6 +11,10 @@ It does not rely on any external libraries, all the logic is implemented in Rust
 
 It is expected to come with a lot of bugs at the beginning. If you want to contribute, please do so, but keep in mind that I'll work on it everyday it will change a lot even if it will take some time to reach a stable state.
 
+## Current state
+
+At the moment it is only able to execute some instructions ... 
+
 I plan to add : 
 
 - [ ] add a GUI (both desktop and web)
