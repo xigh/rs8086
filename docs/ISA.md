@@ -13,8 +13,8 @@
 
 ## 16-bit instructions
 
-- [ ] AAA - ASCII adjust after addition
-- [ ] AAD - ASCII adjust after division
+- [ ] [AAA](#aaa---ascii-adjust-after-addition) - ASCII adjust after addition
+- [ ] [AAD](#aad---ascii-adjust-after-division) - ASCII adjust after division
 - [ ] AAM - ASCII adjust after multiplication
 - [ ] AAS - ASCII adjust after subtraction
 - [ ] ADC - Add with carry
