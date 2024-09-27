@@ -2,14 +2,14 @@
 
 ## operands
 
-- REG:  AH, AL, BL, BH, CH, CL, DH, DL,
+- GENERAL PURPOSE REGISTERS:  AH, AL, BL, BH, CH, CL, DH, DL,
         AX, BX, CX, DX, DI, SI, BP, SP.
 
-- SREG: DS, ES, SS, and only as second operand: CS.
+- SEGMENT REGISTERS: DS, ES, SS, and only as second operand: CS.
 
-- MEM: [BX+SI], [BX+DI], [BP+SI], [BP+DI], [SI], [DI], [BP], [BX]
+- MEMORY ADDRESSING: [BX+SI], [BX+DI], [BP+SI], [BP+DI], [SI], [DI], [BP], [BX] (todo)
 
-- IMM: immediate value in 8 or 16 bits.
+- IMMEDIATE VALUE: 8 or 16 bits : 0x12, 0x1234, etc.
 
 ## 16-bit instructions
 
