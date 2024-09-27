@@ -3,4 +3,4 @@
 *.pdf
 *.old
 *.todo
-/tests/*.bin
+/tests/**/*.bin
