@@ -1,4 +1,4 @@
-# simple 8086 emulator in rust
+# Simple 8086 emulator in Rust programming language
 
 !!! WIP !!! (not fully working) ... I'll keep working on it until it's fully working, and then I'll remove this disclaimer.
 
@@ -17,6 +17,11 @@ I plan to add :
 - [ ] add a debugger
 - [ ] add a disassembler
 - [ ] add an assembler
+
+- [ ] add support for the 8087 FPU
+- [ ] add support for the 80186/80286/80386/80486 ??? 
+- [ ] add emulation of the 8086 BIOS and XT hardware, until it can run DOS programs
+- [ ] make it work on Raspberry Pi Pico (2 with RP2350/RISC-V) boards
 
 ## License
 
