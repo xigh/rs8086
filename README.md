@@ -18,9 +18,13 @@ I plan to add :
 - [ ] add a disassembler
 - [ ] add an assembler
 
+## License
+
+This project is licensed under the MIT license. Do whatever you want with it, but keep in mind that it may contain bugs.
+
 ## How to compile a test ROM :
 
-For the moment, you'll require NASM (Netwide Assembler) to assemble the file.
+For the moment, you'll require [NASM](https://www.nasm.us/) to assemble the file.
 
 ```
 nasm -f bin -o tests/1.bin tests/1.asm
