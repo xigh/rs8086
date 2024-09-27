@@ -37,6 +37,8 @@ nasm -f bin -o tests/1.bin tests/1.asm
 
 ## Building and running
 
+Of course you'll need [Rust](https://www.rust-lang.org/tools/install) to build the project. I'll add release binaries as soon as it gets to a stable state.
+
 ```
 cargo run --bin=emu8086 -- <rom-file.bin>
 ```
