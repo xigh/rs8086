@@ -11,7 +11,8 @@ test1:
         MOV     AX, 0x0105
         AAA
         RET
+        HLT
 
-        ; must come after HLT or RET
+        ; must come after HLT or RET followed by a HLT (so that the emulator can check the result)
         EXPECT  AX, 0x0005
         ; todo: flags
