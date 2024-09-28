@@ -67,7 +67,7 @@ _start:
 
 Where `EXPECT` is a macro from [`./expect.inc`](./tests/expect.inc) that adds data to the test file, and the emulator will check that the condition(s) is true at the end of the program.
 
-Here it only test the CF flag (carry flag), which is set by the [STC](./docs/ISA.md#stc---set-carry-flag) instruction.
+Here it only tests the CF flag (carry flag), which is set by the [STC](./docs/ISA.md#stc---set-carry-flag) instruction.
 
 ![capture-2024-09-28](./docs/imgs/capture-2024-09-28.png)
 
