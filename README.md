@@ -46,11 +46,7 @@ Of course you'll need [Rust](https://www.rust-lang.org/tools/install) to build t
 cargo run --bin=emu8086 -- <rom-file.bin>
 ```
 
-## Screenshots
-
-### 2024-09-27 - first approach
-
-![capture-2024-09-27](./docs/imgs/capture-2024-09-27.png)
+## Changelog and screenshots (from most recent to oldest)
 
 ### 2024-09-28 - started to automate the testing
 
@@ -74,3 +70,7 @@ Where `EXPECT` is a macro from [`./expect.inc`](./tests/expect.inc) that adds da
 Here it only test the CF flag (carry flag), which is set by the [STC](./docs/ISA.md#stc---set-carry-flag) instruction.
 
 ![capture-2024-09-28](./docs/imgs/capture-2024-09-28.png)
+
+### 2024-09-27 - first approach
+
+![capture-2024-09-27](./docs/imgs/capture-2024-09-27.png)
