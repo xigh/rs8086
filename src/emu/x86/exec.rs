@@ -2,7 +2,7 @@ use std::cmp::Ordering;
 
 use tracing::{debug, trace};
 
-use lib8086::{Inst, Op, Sreg, Reg16, Cc};
+use lib8086::{Inst, Op, Sreg, Reg8, Reg16, Cc};
 
 use crate::x86::MemAddrT;
 
@@ -125,7 +125,22 @@ impl Cpu {
             Op::Ret => todo!(),
             Op::Daa => todo!(),
             Op::Das => todo!(),
-            Op::Aaa => todo!(),
+            Op::Aaa => {
+                let al = self.read_reg8(Reg8::AL);
+                let ah = self.read_reg8(Reg8::AH);
+                let res = al.wrapping_add(ah.wrapping_mul(10));
+                self.write_reg8(Reg8::AL, res);
+                self.write_reg8(Reg8::AH, 0);
+
+                self.clear_flag(Flags::C);
+                self.clear_flag(Flags::A);
+                if res > 9 {
+                    self.set_flag(Flags::C);    
+                }
+                if al > 9 {
+                    self.set_flag(Flags::A);
+                }
+            },
             Op::Aas => todo!(),
             Op::Inc(_) => todo!(),
             Op::Dec(_) => todo!(),
