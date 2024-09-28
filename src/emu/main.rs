@@ -20,6 +20,7 @@ fn main() -> Result<()> {
     let mut opts = EmuOpts::default();
     let mut level = Level::ERROR;
     let mut hide_header = false;
+    let mut show_binary_name = false;
 
     for arg in args().skip(1) {
         if arg.starts_with("-") {
@@ -73,6 +74,11 @@ fn main() -> Result<()> {
                 continue;
             }
 
+            if arg == "-show-binary-name" {
+                show_binary_name = true;
+                continue;
+            }
+
             eprintln!("Unknown option: {}", arg);
             return Ok(());
         }
@@ -92,6 +98,10 @@ fn main() -> Result<()> {
         .init();
 
     for binary in binaries {
+        if show_binary_name {
+            println!("executing {}:", binary);
+        }
+
         match emulate(&binary, &opts) {
             Ok(_) => {}
             Err(e) => {
