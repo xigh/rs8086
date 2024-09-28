@@ -14,6 +14,7 @@ and so many others... (i'll try to list them as i go)
 Table of contents:
 
 - [operands](#operands)
+- [flags](#flags)
 - [instructions](#instructions)
 - [opcode map](#opcode-map)
 
@@ -29,6 +30,44 @@ Table of contents:
 - MEMORY ADDRESSING: [BX+SI], [BX+DI], [BP+SI], [BP+DI], [SI], [DI], [BP], [BX] (todo)
 
 - IMMEDIATE VALUE: 8 or 16 bits : 0x12, 0x1234, etc.
+
+## Flags
+
+- CF - Carry flag
+
+This flag is set if the last arithmetic operation generated a carry or a borrow.
+
+- PF - Parity flag
+
+This flag is set if the last arithmetic operation generated an even number of 1-bits in the result.
+
+- AF - Auxiliary carry flag
+
+This flag is set if the last arithmetic operation generated a carry or borrow from bit 3 to bit 4. Todo: play with BCD and this flag.
+
+- ZF - Zero flag
+
+This flag is set if the last arithmetic or logical operation generated a zero result.
+
+- SF - Sign flag
+
+This flag is set if the last arithmetic or logical operation generated a negative result.
+
+- TF - Trap flag
+
+This flags puts the processor in single step mode for debugging. In this mode, the processor will generate an interrupt after each instruction.
+
+- IF - Interrupt flag
+
+This flag enables or disables interrupts.
+
+- DF - Direction flag
+
+This flag is used in string instructions to determine the direction of the operation.
+
+- OF - Overflow flag
+
+This flag is set if the last arithmetic operation generated an overflow.
 
 ## Instructions
 
@@ -153,6 +192,166 @@ Table of contents:
 - [ ] XCHG - Exchange
 - [ ] XLATB - Translate byte
 - [ ] XOR - Exclusive or
+
+## Instruction by kind
+
+### Data transfer instructions
+
+#### General purpose
+
+- MOV
+- PUSH
+- POP
+- PUSHA
+- POPA
+- XCHG
+- XLATB
+
+#### Input/Output
+
+- IN
+- OUT
+
+#### Address object and stack frame
+
+- LEA
+- LDS
+- LES
+- ENTER (added in 80186)
+- LEAVE (added in 80186)
+
+### Flag transfer
+
+- LAHF
+- SAHF
+- PUSHF
+- POPF
+
+### Arithmetic instructions
+
+#### Addition
+
+- ADD
+- ADC
+- INC
+- AAA
+- DAA
+
+#### Subtraction
+
+- SUB
+- SBB
+- DEC
+- NEG
+- CMP
+- AAS
+- DAS
+
+#### Multiplication
+
+- MUL
+- IMUL
+- AAM
+
+#### Division
+
+- DIV
+- IDIV
+- AAD
+
+#### Conversion
+
+- CBW
+- CWD
+
+todo: maybe we can put aaa, aad, aam, aas in the same section ???
+
+### Bit manipulation
+
+#### Logical
+
+- AND
+- OR
+- XOR
+- NOT
+- TEST
+
+#### Shift
+
+- SHL/SAL
+- SHR
+- SAR
+
+#### Rotate
+
+- ROL
+- ROR
+- RCL
+- RCR
+
+### String
+
+- REP
+- REPE/REPZ
+- REPNE/REPNZ
+- MOVSB/MOVSW
+- CMPSB/CMPSW
+- SCASB/SCASW
+- LODSB/LODSW
+- STOSB/STOSW
+
+### Control instructions
+
+#### Conditional
+
+- Jcc
+
+#### Unconditionnal
+
+- CALL
+- RET
+- JMP
+
+#### Iteration control
+
+- LOOP
+- LOOPE/LOOPZ
+- LOOPNE/LOOPNZ
+- JCXZ
+
+#### Interrupt
+
+- INT
+- INTO
+- IRET
+- BOUND (introduced in 80286 ???)
+
+### Processor control
+
+#### Flag operations
+
+- CLC
+- CLD
+- CLI
+- CMC
+- STC
+- STD
+- STI
+
+#### External synchronization
+
+- HLT
+- WAIT
+- ESC
+- LOCK
+
+#### No operation
+
+- NOP
+
+
+
+## Instructions details
 
 ### AAA - ASCII adjust after addition
 
@@ -407,6 +606,8 @@ See example in [tests/isa/add.asm](../tests/isa/add.asm)
 ### XLATB - Translate byte
 
 ### XOR - Exclusive or
+
+## Instruction by 
 
 ## Opcode map
 
