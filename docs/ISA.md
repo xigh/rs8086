@@ -642,7 +642,7 @@ See example in [tests/isa/add.asm](../tests/isa/add.asm)
 | A- | | | | | | | | |
 | B- | | | | | | | | |
 | C- | | | | | | | | |
-| D- | | | | | AAM | AAD | | |
+| D- | | | | | AAM imm8 | AAD imm8 | | |
 | E- | | | | | | | | |
 | F- | | | | | | | | |
 
