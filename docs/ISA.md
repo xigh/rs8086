@@ -1,4 +1,4 @@
-# 8086 ISA
+# 80[_12]86 ISA
 
 For more informations about x86 opcodes, you can read the following documents:
 
