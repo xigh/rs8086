@@ -1,5 +1,21 @@
 # 8086 ISA
 
+For more informations about x86 opcodes, you can read the following documents:
+
+- [Intel® 64 and IA-32 Architectures Software Developer Manuals](https://www.intel.com/content/www/us/en/developer/articles/technical/intel-sdm.html)
+- [AMD64 Architecture Programmer's Manual Volume 2: System Programming](https://developer.amd.com/wp-content/resources/AMD64-Architecture-Programmer-s-Manual-Volume-2.pdf)
+- [Wikipedia x86 opcode listing](https://en.wikipedia.org/wiki/X86_instruction_listings)
+- [Shell-storm x86 opcode listing](https://shell-storm.org/x86doc/)
+- [Linux kernel x86 opcode listing](https://github.com/torvalds/linux/blob/master/arch/x86/lib/x86-opcode-map.txt)
+
+and so many others... (i'll try to list them as i go)
+
+Table of contents:
+
+- [operands](#operands)
+- [instructions](#instructions)
+- [opcode map](#opcode-map)
+
 ## operands
 
 - GENERAL PURPOSE REGISTERS:  AH, AL, BL, BH, CH, CL, DH, DL,
