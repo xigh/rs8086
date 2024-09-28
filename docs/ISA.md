@@ -201,16 +201,14 @@ See example in [tests/isa/aas.asm](../tests/isa/aas.asm)
 
 Opcodes: 
 
-| bytes | mnemonic | description |
-|-------|----------|-------------|
-| `10 op r/m` | ADC r/m8, r8 | Add with carry |
-| `11 op r/m` | ADC r/m16, r16 | Add with carry |
-| `12 op r/m` | ADC r/m8, imm8 | Add with carry |
-| `13 op r/m` | ADC r/m16, imm16 | Add with carry |
-| `14` | ADC AL, imm8 | Add with carry |
-| `15` | ADC AX, imm16 | Add with carry |
-
-todo
+| bytes | mnemonic |
+|-------|----------|
+| `10 op r/m` | ADC r/m8, r8 |
+| `11 op r/m` | ADC r/m16, r16 |
+| `12 op r/m` | ADC r/m8, imm8 |
+| `13 op r/m` | ADC r/m16, imm16 |
+| `14` | ADC AL, imm8 |
+| `15` | ADC AX, imm16 |
 
 ```
 AL = AL + (CF ? 1 : 0)
@@ -222,14 +220,14 @@ See example in [tests/isa/adc.asm](../tests/isa/adc.asm)
 
 Opcodes: 
 
-| bytes | mnemonic | description |
-|-------|----------|-------------|
-| `00 op r/m` | ADD r/m8, r8 | Add |
-| `01 op r/m` | ADD r/m16, r16 | Add |
-| `02 op r/m` | ADD r/m8, imm8 | Add |
-| `03 op r/m` | ADD r/m16, imm16 | Add |
-| `04` | ADD AL, imm8 | Add |
-| `05` | ADD AX, imm16 | Add |
+| bytes | mnemonic |
+|-------|----------|
+| `00 op r/m` | ADD r/m8, r8 |
+| `01 op r/m` | ADD r/m16, r16 |
+| `02 op r/m` | ADD r/m8, imm8 |
+| `03 op r/m` | ADD r/m16, imm16 |
+| `04` | ADD AL, imm8 |
+| `05` | ADD AX, imm16 |
 
 todo
 
