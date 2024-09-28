@@ -4,10 +4,9 @@
 
 ## For the curious
 
-I started this project because I was curious how the 8086 worked, and I wanted to see how far I could get with
-emulating it in Rust.
+I started this project because I was curious how the 8086/80186/80286 cpus worked, and I wanted to see how far I could get with emulating it in Rust.
 
-It does not rely on any external libraries, all the logic is implemented in Rust (except for logging of course).
+It does not rely on any external libraries, all the logic is implemented in Rust (except for tracing functions of course).
 
 It is expected to come with a lot of bugs at the beginning. If you want to contribute, please do so, but keep in mind that I'll work on it everyday it will change a lot even if it will take some time to reach a stable state.
 
@@ -70,7 +69,7 @@ _start:
         EXPECT  CF, 1
 ```
 
-Where `EXPECT` is a macro from [`./expect.inc`](./tests/expect.inc) that add data to the test file, and the emulator will check that the condition(s) is true at the end of the program.
+Where `EXPECT` is a macro from [`./expect.inc`](./tests/expect.inc) that adds data to the test file, and the emulator will check that the condition(s) is true at the end of the program.
 
 Here it only test the CF flag (carry flag), which is set by the [STC](./docs/ISA.md#stc---set-carry-flag) instruction.
 
