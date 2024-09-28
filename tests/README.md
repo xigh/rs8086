@@ -58,8 +58,8 @@ ndisasm tests/isa/aaa.bin
 ## how to simply compile `aaa` instruction
 
 ```bash
-nasm -f bin -Itests -otests/isa/aaa.bin tests/isa/aaa.asm 
-ndisasm tests/isa/aaa.bin 
+$ nasm -f bin -Itests -otests/isa/aaa.bin tests/isa/aaa.asm 
+$ ndisasm tests/isa/aaa.bin 
 ```
 
 ```text
