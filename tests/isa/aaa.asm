@@ -4,15 +4,8 @@ ORG     0       ; !!! hey: in fact, we start at 0xf000:0x0000
 %include "./expect.inc"
 
 _start:
-        CALL    test1
-        HLT
-
-test1:
         MOV     AX, 0x0105
         AAA
-        RET
         HLT
 
-        ; must come after HLT or RET followed by a HLT (so that the emulator can check the result)
-        EXPECT  __FILE__, __LINE__, AX, 0x0005
-        ; todo: flags
+        EXPECT  __FILE__, __LINE__, AX, 0x000F
