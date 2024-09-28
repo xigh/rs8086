@@ -126,20 +126,42 @@ impl Cpu {
             Op::Daa => todo!(),
             Op::Das => todo!(),
             Op::Aaa => {
+                let mut ax = self.read_reg16(Reg16::AX);
+                let mut ah = (ax >> 8) as u8;
+                let mut al = (ax & 0xFF) as u8;
+                let al_low = ax & 0x0F;
+                if al_low > 9 || self.is_flag_set(Flags::A) {
+                    // https://www.pcjs.org/documents/manuals/intel/8086/ops/AAA/
+
+                    // todo: check !!!! this is what happens in 286+
+                    // ax = ax.wrapping_add(0x106);
+
+                    // todo: but this is what we want for 8086:
+                    al = al.wrapping_add(0x06);
+                    ah = ah.wrapping_add(0x01);
+                    ax = (ah as u16) << 8 | al as u16;
+
+                    self.set_flag(Flags::A);
+                    self.set_flag(Flags::C);
+                } else {
+                    self.clear_flag(Flags::A);
+                    self.clear_flag(Flags::C);
+                }
+                ax = ax & 0xFF0F;
+                self.write_reg16(Reg16::AX, ax);
+            },
+            Op::Aad(b1) => {
                 let al = self.read_reg8(Reg8::AL);
                 let ah = self.read_reg8(Reg8::AH);
-                let res = al.wrapping_add(ah.wrapping_mul(10));
-                self.write_reg8(Reg8::AL, res);
+                let al = al + (ah * b1 as u8);
+                self.write_reg8(Reg8::AL, al);
                 self.write_reg8(Reg8::AH, 0);
-
-                self.clear_flag(Flags::C);
-                self.clear_flag(Flags::A);
-                if res > 9 {
-                    self.set_flag(Flags::C);    
-                }
-                if al > 9 {
-                    self.set_flag(Flags::A);
-                }
+            },
+            Op::Aam(b1) => {
+                let al = self.read_reg8(Reg8::AL);
+                let ah = al / b1;
+                self.write_reg8(Reg8::AL, al % b1);
+                self.write_reg8(Reg8::AH, ah);
             },
             Op::Aas => todo!(),
             Op::Inc(_) => todo!(),

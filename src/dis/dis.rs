@@ -100,10 +100,28 @@ pub fn inst_to_string(pc: MemAddrT, inst: &Inst) -> String {
             s.push_str(arg_to_string(&a1).as_str());
         },
         Op::Ret => s.push_str("ret"),
+
+        Op::Aaa => s.push_str("aaa"),
+
+        Op::Aad(b1) => {
+            s.push_str("aad ");
+            if *b1 != 0xa {
+                s.push_str(format!("0x{:02x}", b1).as_str());
+            }
+        },
+        Op::Aam(b1) => {
+            s.push_str("aam ");
+            if *b1 != 0xa {
+                s.push_str(format!("0x{:02x}", b1).as_str());
+            }
+        },
+
+
+        Op::Aas => s.push_str("aas"),
+
         Op::Daa => s.push_str("daa"),
         Op::Das => s.push_str("das"),
-        Op::Aaa => s.push_str("aaa"),
-        Op::Aas => s.push_str("aas"),
+
         Op::Inc(_) => s.push_str("inc"),
         Op::Dec(_) => s.push_str("dec"),
         Op::Jcc(cc, disp) => {

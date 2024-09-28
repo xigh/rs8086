@@ -7,6 +7,7 @@ For more informations about x86 opcodes, you can read the following documents:
 - [Wikipedia x86 opcode listing](https://en.wikipedia.org/wiki/X86_instruction_listings)
 - [Shell-storm x86 opcode listing](https://shell-storm.org/x86doc/)
 - [Linux kernel x86 opcode listing](https://github.com/torvalds/linux/blob/master/arch/x86/lib/x86-opcode-map.txt)
+- [PCjs Intel 8086 opcodes](https://www.pcjs.org/documents/manuals/intel/8086/) [this one is very good]
 
 and so many others... (i'll try to list them as i go)
 
@@ -31,7 +32,7 @@ Table of contents:
 
 ## Instructions
 
-- [ ] [AAA](#aaa---ascii-adjust-after-addition) - ASCII adjust after addition
+- [X] [AAA](#aaa---ascii-adjust-after-addition) - ASCII adjust after addition
 - [ ] [AAD](#aad---ascii-adjust-after-division) - ASCII adjust after division
 - [ ] AAM - ASCII adjust after multiplication
 - [ ] AAS - ASCII adjust after subtraction

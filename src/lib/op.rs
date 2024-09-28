@@ -32,10 +32,13 @@ pub enum Op {
 
     Ret,
 
+    Aaa,
+    Aad(u8),
+    Aam(u8),
+    Aas,
+
     Daa,
     Das,
-    Aaa,
-    Aas,
 
     Inc(Arg),
     Dec(Arg),

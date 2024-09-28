@@ -608,7 +608,58 @@ impl<'a> Decoder<'a> {
 
     fn next_d(&mut self, b0: u8) -> Option<Op> {
         match b0 & 0xf {
-            0x0..=0xf => unimplemented!("0x{:02x}", b0),
+            0x0 => {
+                unimplemented!("0x{:02x}", b0)
+            },
+            0x1 => {
+                unimplemented!("0x{:02x}", b0)
+            },
+            0x2 => {
+                unimplemented!("0x{:02x}", b0)
+            },
+            0x3 => {
+                unimplemented!("0x{:02x}", b0)
+            },
+            0x4 => {
+                // 0xd4 -> aam
+                let b1 = self.nextb()?;
+                Some(Op::Aam(b1))
+            },
+            0x5 => {
+                // 0xd5 -> aad
+                let b1 = self.nextb()?;
+                Some(Op::Aad(b1))
+            },
+            0x6 => {
+                unimplemented!("0x{:02x}", b0)
+            },
+            0x7 => {
+                unimplemented!("0x{:02x}", b0)
+            },
+            0x8 => {
+                unimplemented!("0x{:02x}", b0)
+            },
+            0x9 => {
+                unimplemented!("0x{:02x}", b0)
+            },
+            0xa => {
+                unimplemented!("0x{:02x}", b0)
+            },
+            0xb => {
+                unimplemented!("0x{:02x}", b0)
+            },
+            0xc => {
+                unimplemented!("0x{:02x}", b0)
+            },
+            0xd => {
+                unimplemented!("0x{:02x}", b0)
+            },
+            0xe => {
+                unimplemented!("0x{:02x}", b0)
+            },
+            0xf => {
+                unimplemented!("0x{:02x}", b0)
+            },
             _ => unreachable!(),
         }
     }
