@@ -55,4 +55,23 @@ cargo run --bin=emu8086 -- <rom-file.bin>
 
 ### 2024-09-28 - started to automate the testing
 
+With the following assembly code :
+
+```asm
+CPU     8086
+BITS    16
+ORG     0       ; !!! hey: in fact, we start at 0xf000:0x0000
+%include "./expect.inc"
+
+_start:
+        STC
+        HLT
+
+        EXPECT  CF, 1
+```
+
+Where `EXPECT` is a macro from [`./expect.inc`](./tests/expect.inc) that add data to the test file, and the emulator will check that the condition(s) is true at the end of the program.
+
+Here it only test the CF flag (carry flag), which is set by the (STC)[./docs/isa.md#STC] instruction.
+
 ![capture-2024-09-28](./docs/imgs/capture-2024-09-28.png)
