@@ -1,5 +1,37 @@
 # tests
 
+## error message
+
+The test framework can now display an explicit error message when an error occurs.
+
+```asm
+CPU     8086
+BITS    16
+ORG     0       ; !!! hey: in fact, we start at 0xf000:0x0000
+%include "./expect.inc"
+
+_start:
+        HLT
+
+        EXPECT  __FILE__, __LINE__, AX, 1 ; this is an error
+```
+
+```bash
+zexigh@white:~/sources/rs8086$ nasm -f bin -DDEBUG -Itests -otests/error.bin tests/error.asm 
+zexigh@white:~/sources/rs8086$ cargo r --bin emu8086 -- -test -hide-header -dump-regs-on-halt tests/error.bin 
+```
+
+will output:
+
+```text
+    Finished dev [unoptimized + debuginfo] target(s) in 0.01s
+     Running `target/debug/emu8086 -test -hide-header -dump-regs-on-halt tests/error.bin`
+0F0000 f4               hlt
+tests/error.bin: tests/error.asm:9: AX: got 0x0000, expected 0x0001
+```
+
+## how to test `aaa` instruction
+
 ```bash
 nasm -f bin -DDEBUG -Itests -otests/isa/aaa.bin tests/isa/aaa.asm 
 ndisasm tests/isa/aaa.bin 
@@ -16,6 +48,8 @@ ndisasm tests/isa/aaa.bin
 0000000B  05                db 0x05
 0000000C  00                db 0x00
 ```
+
+## how to simply compile `aaa` instruction
 
 ```bash
 nasm -f bin -Itests -otests/isa/aaa.bin tests/isa/aaa.asm 
