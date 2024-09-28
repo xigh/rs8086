@@ -4,16 +4,18 @@
 
 The test framework can now display an explicit error message when an error occurs.
 
+In file `tests/error.asm`:
+
 ```asm
 CPU     8086
 BITS    16
-ORG     0       ; !!! hey: in fact, we start at 0xf000:0x0000
+ORG     0
 %include "./expect.inc"
 
 _start:
         HLT
 
-        EXPECT  __FILE__, __LINE__, AX, 1 ; this is an error
+        EXPECT  __FILE__, __LINE__, AX, 1 ; this is an error as by default AX is initialized to 0x0000
 ```
 
 ```bash
