@@ -349,8 +349,6 @@ todo: maybe we can put aaa, aad, aam, aas in the same section ???
 
 - NOP
 
-
-
 ## Instructions details
 
 ### AAA - ASCII adjust after addition
