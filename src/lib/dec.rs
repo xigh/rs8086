@@ -262,30 +262,30 @@ impl<'a> Decoder<'a> {
             0x8 => {
                 let b1 = self.nextb()?;
                 let (a0, a1) = modrm8(b1);
-                Some(Op::Sbb(a0, a1))
+                Some(Op::Sub(a0, a1))
             }
             0x9 => {
                 let b1 = self.nextb()?;
                 let (a0, a1) = modrm16(b1);
-                Some(Op::Sbb(a1, a0))
+                Some(Op::Sub(a1, a0))
             }
             0xa => {
                 let b1 = self.nextb()?;
                 let (a0, a1) = modrm8(b1);
-                Some(Op::Sbb(a0, a1))
+                Some(Op::Sub(a0, a1))
             }
             0xb => {
                 let b1 = self.nextb()?;
                 let (a0, a1) = modrm16(b1);
-                Some(Op::Sbb(a1, a0))
+                Some(Op::Sub(a1, a0))
             }
             0xc => {
                 let b1 = self.nextb()?;
-                Some(Op::Sbb(Arg::Reg8(Reg8::AL), Arg::Uimm8(b1)))
+                Some(Op::Sub(Arg::Reg8(Reg8::AL), Arg::Uimm8(b1)))
             }
             0xd => {
                 let w = self.nextw()?;
-                Some(Op::Sbb(Arg::Reg16(Reg16::AX), Arg::Uimm16(w)))
+                Some(Op::Sub(Arg::Reg16(Reg16::AX), Arg::Uimm16(w)))
             }
             0xe => {
                 if self.sreg == Some(Sreg::CS) {

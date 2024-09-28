@@ -1,11 +1,12 @@
 CPU     8086
 BITS    16
-ORG     0       ; !!! hey: in fact, we start at 0xf000:0x0000
+ORG     0
+%include "expect.inc"
 
 _start:
-        MOV AL, 0x05
+        MOV     AL, 0x05
         STC
-        ADC AL, 0x01
-        RET
+        ADC     AL, 0x01
+        HLT
 
-; EXPECT AX == 0x07
+        EXPECT  __FILE__, __LINE__, AL, 0x07

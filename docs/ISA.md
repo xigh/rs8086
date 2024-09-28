@@ -174,10 +174,10 @@ See example in [tests/isa/aaa.asm](../tests/isa/aaa.asm)
 
 ### AAD - ASCII adjust after division
 
-Opcode: `D5`
+Opcode: `D5 ib`
 
 ```
-AL = (AL + AH * 10) AND 0FH
+AL = (AL + AH * ib) AND 0FH
 AH = 0
 ```
 
@@ -185,11 +185,12 @@ See example in [tests/isa/aad.asm](../tests/isa/aad.asm)
 
 ### AAM - ASCII adjust after multiplication
 
-Opcode: `D4`
+Opcode: `D4 ib`
 
 ```
-AL = (AL * AH) AND 0FH
-AH = 0
+tempAL = AL
+AL = (tempAL * ib) AND 0FH
+AH = tempAL / ib
 ```
 
 See example in [tests/isa/aam.asm](../tests/isa/aam.asm)
@@ -200,14 +201,15 @@ Opcode: `3F`
 
 ```
 if (AL AND 0FH) > 9 or AF = 1 then:
-    AL = AL - 6
-    AH = AH - 1
+    AX = AX – 6
+    AH = AH – 1
     AF = 1
     CF = 1
+    AL = AL AND 0FH
 else:
     AF = 0
     CF = 0
-AL = AL AND 0FH
+    AL = AL AND 0FH
 ```
 
 See example in [tests/isa/aas.asm](../tests/isa/aas.asm)

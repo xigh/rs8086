@@ -6,7 +6,6 @@ _start:
         MOV AL, 0x05
         STC
         SBB AL, 0x01
-        RET
+        HLT
 
-; EXPECT AL = 0x04, CF = 1
-
+        EXPECT  __FILE__, __LINE__, AL, 0x03

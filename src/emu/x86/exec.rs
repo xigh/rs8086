@@ -73,10 +73,35 @@ impl Cpu {
                     Ordering::Greater => self.clear_flag(Flags::C),
                 }
             }
-            Op::Adc(_, _) => todo!(),
-            Op::Sbb(_, _) => todo!(),
-            Op::Sub(_, _) => todo!(),
-            Op::And(_, _) => todo!(),
+            Op::Adc(a1, a2) => {
+                let v1 = self.read_arg(&a1);
+                let v2 = self.read_arg(&a2);
+                let cf = self.is_flag_set(Flags::C) as u16;
+                let nv = v1.wrapping_add(v2).wrapping_add(cf);
+                self.write_arg(&a1, nv);
+                // todo: set flags
+            }
+            Op::Sbb(a1, a2) => {
+                let v1 = self.read_arg(&a1);
+                let v2 = self.read_arg(&a2);
+                let cf = self.is_flag_set(Flags::C) as u16;
+                let nv = v1.wrapping_sub(v2).wrapping_sub(cf);
+                self.write_arg(&a1, nv);
+                // todo: set flags
+            },
+            Op::Sub(a1, a2) => {
+                let v1 = self.read_arg(&a1);
+                let v2 = self.read_arg(&a2);
+                let nv = v1.wrapping_sub(v2);
+                self.write_arg(&a1, nv);
+                // todo: set flags
+            }
+            Op::And(a1, a2) => {
+                let v1 = self.read_arg(&a1);
+                let v2 = self.read_arg(&a2);
+                self.write_arg(&a1, v1 & v2);
+                // todo: set flags
+            }
             Op::Or(a1, a2) => {
                 let v1 = self.read_arg(&a1);
                 let v2 = self.read_arg(&a2);
@@ -126,6 +151,7 @@ impl Cpu {
             Op::Daa => todo!(),
             Op::Das => todo!(),
             Op::Aaa => {
+                // todo: not sure if this is correct
                 let mut ax = self.read_reg16(Reg16::AX);
                 let mut ah = (ax >> 8) as u8;
                 let mut al = (ax & 0xFF) as u8;
@@ -151,6 +177,7 @@ impl Cpu {
                 self.write_reg16(Reg16::AX, ax);
             },
             Op::Aad(b1) => {
+                // todo: not sure if this is correct
                 let al = self.read_reg8(Reg8::AL);
                 let ah = self.read_reg8(Reg8::AH);
                 let al = al + (ah * b1 as u8);
@@ -158,12 +185,31 @@ impl Cpu {
                 self.write_reg8(Reg8::AH, 0);
             },
             Op::Aam(b1) => {
+                // todo: not sure if this is correct
                 let al = self.read_reg8(Reg8::AL);
                 let ah = al / b1;
                 self.write_reg8(Reg8::AL, al % b1);
                 self.write_reg8(Reg8::AH, ah);
             },
-            Op::Aas => todo!(),
+            Op::Aas => {
+                // todo: not sure if this is correct
+                let mut ax = self.read_reg16(Reg16::AX);
+                let al_low = ax & 0x0F;
+                if al_low > 9 || self.is_flag_set(Flags::A) {
+                    ax = ax.wrapping_sub(0x0600);
+                    let ah = (ax >> 8) as u8;
+                    let ah = ah.wrapping_sub(1);
+                    let al = ax & 0xff;
+                    ax = (ah as u16) << 8 | al as u16;
+                    self.set_flag(Flags::A);
+                    self.set_flag(Flags::C);
+                } else {
+                    self.clear_flag(Flags::A);
+                    self.clear_flag(Flags::C);
+                    ax = ax & 0xFF0F;
+                }
+                self.write_reg16(Reg16::AX, ax);
+            },
             Op::Inc(_) => todo!(),
             Op::Dec(_) => todo!(),
             Op::Jcc(cc, disp) => {
