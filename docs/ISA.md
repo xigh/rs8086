@@ -16,7 +16,7 @@ Table of contents:
 - [instructions](#instructions)
 - [opcode map](#opcode-map)
 
-## operands
+## Operands
 
 - GENERAL PURPOSE REGISTERS:  AH, AL, BL, BH, CH, CL, DH, DL,
         AX, BX, CX, DX, DI, SI, BP, SP.
@@ -29,7 +29,7 @@ Table of contents:
 
 - IMMEDIATE VALUE: 8 or 16 bits : 0x12, 0x1234, etc.
 
-## 16-bit instructions
+## Instructions
 
 - [ ] [AAA](#aaa---ascii-adjust-after-addition) - ASCII adjust after addition
 - [ ] [AAD](#aad---ascii-adjust-after-division) - ASCII adjust after division
@@ -152,8 +152,6 @@ Table of contents:
 - [ ] XCHG - Exchange
 - [ ] XLATB - Translate byte
 - [ ] XOR - Exclusive or
-
-## 8086 instructions
 
 ### AAA - ASCII adjust after addition
 
