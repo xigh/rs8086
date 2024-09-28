@@ -59,7 +59,7 @@ impl MemOps for DeviceROM {
                     return 0;
                 }
                 let b1 = self.bytes[offset + 1] as OpSizeT;
-                let w = (b0 << 8) | b1;
+                let w = (b1 << 8) | b0;
                 info!("read addr={:05x}, offset={:05x}, sz={:?}, val={:04x}", addr, offset, sz, w);
                 w
             }

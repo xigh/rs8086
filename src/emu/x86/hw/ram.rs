@@ -34,17 +34,17 @@ impl MemOps for DeviceRAM {
             return 0;
         }
 
+        let b0 = self.bytes[offset] as OpSizeT;
         match sz {
-            OpSize::Byte => self.bytes[offset] as OpSizeT,
+            OpSize::Byte => b0 as OpSizeT,
             OpSize::Word => {
                 if offset + 1 >= self.bytes.len() {
                     println!("out of bounds");
                     return 0;
                 }
 
-                let b1 = self.bytes[offset] as u16;
-                let b2 = self.bytes[offset + 1] as u16;
-                (b1 << 8) | b2
+                let b1 = self.bytes[offset + 1] as OpSizeT;
+                (b1 << 8) | b0
             }
         }
     }
