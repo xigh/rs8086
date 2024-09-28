@@ -686,14 +686,14 @@ impl<'a> Decoder<'a> {
             0x6 => { // 0xf6 -> clc
                 Some(Op::Clc)
             },
-            0x7 => { // 0xf7 -> stc
-                Some(Op::Stc)
+            0x7 => { // 0xf7 -> sti
+                Some(Op::Sti)
             },
             0x8 => { // 0xf8 -> cli
                 Some(Op::Cli)
             },
-            0x9 => { // 0xf9 -> sti
-                Some(Op::Sti)
+            0x9 => { // 0xf9 -> stc
+                Some(Op::Stc)
             },
             0xa => { // 0xfa -> cld
                 Some(Op::Cld)

@@ -45,7 +45,7 @@ impl Cpu {
             .map(|b| format!("{:02x}", *b))
             .collect::<Vec<String>>();
         println!(
-            "\n{:06X} {:16} {}",
+            "{:06X} {:16} {}",
             pc,
             bytes.join(" "),
             inst_to_string(pc, &inst)

@@ -20,3 +20,11 @@ _start:
         EXPECT  SS, 0x0000
 
         EXPECT  CF, 0
+        EXPECT  PF, 0
+        EXPECT  AF, 0
+        EXPECT  ZF, 0
+        EXPECT  SF, 0
+        EXPECT  TF, 0
+        EXPECT  IF, 0
+        EXPECT  DF, 0
+        EXPECT  OF, 0

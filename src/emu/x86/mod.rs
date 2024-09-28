@@ -32,14 +32,17 @@ use hw::init_devices;
 mod cfg;
 pub use cfg::Config;
 
+#[derive(Debug, Clone, Copy)]
 pub enum Flags {
-    Z,
-    S,
-    P,
-    I,
-    C,
-    O,
-    D,
+    C = 0,
+    P = 2,
+    A = 4,
+    Z = 6,
+    S = 7,
+    T = 8,
+    I = 9,
+    D = 10,
+    O = 11,
 }
 
 #[derive(Debug, Default)]
@@ -104,13 +107,25 @@ impl Cpu {
         );
 
         println!(
-            "CS={:04X} DS={:04X} SS={:04X} ES={:04X} IP={:04X} FL={:04X}",
+            "CS={:04X} DS={:04X} SS={:04X} ES={:04X} IP={:04X}",
             self.sregs.cs,
             self.sregs.ds,
             self.sregs.ss,
             self.sregs.es,
             self.ip,
+        );
+
+        println!("FL={:04X} CF={:01X} PF={:01X} AF={:01X} ZF={:01X} SF={:01X} TF={:01X} IF={:01X} DF={:01X} OF={:01X}",
             self.flags,
+            self.is_flag_set(Flags::C) as u8,
+            self.is_flag_set(Flags::P) as u8,
+            self.is_flag_set(Flags::A) as u8,
+            self.is_flag_set(Flags::Z) as u8,
+            self.is_flag_set(Flags::S) as u8,
+            self.is_flag_set(Flags::T) as u8,
+            self.is_flag_set(Flags::I) as u8,
+            self.is_flag_set(Flags::D) as u8,
+            self.is_flag_set(Flags::O) as u8,
         );
     }
 
@@ -211,31 +226,30 @@ impl Cpu {
     }
 
     fn flag_mask(f: Flags) -> u16 {
-        match f {
-            Flags::O => 0x0800,
-            Flags::D => 0x0400,
-            Flags::I => 0x0200,
-            Flags::Z => 0x0040,
-            Flags::S => 0x0080,
-            Flags::P => 0x0004,
-            Flags::C => 0x0001,
-        }
+        1 << f as u16
     }
 
     pub fn set_flag(&mut self, f: Flags) {
-        self.flags |= Self::flag_mask(f);
+        let m = Self::flag_mask(f);
+        self.flags |= m;
+        debug!("set_flag: f={:?} mask={:04x} flags={:04x}", f, m, self.flags);
     }
 
     pub fn clear_flag(&mut self, f: Flags) {
-        self.flags &= !Self::flag_mask(f);
+        let m = Self::flag_mask(f);
+        self.flags &= !m;
+        debug!("clear_flag: f={:?} mask={:04x} flags={:04x}", f, m, self.flags);
     }
 
     pub fn toggle_flag(&mut self, f: Flags) {
-        self.flags ^= Self::flag_mask(f);
+        let m = Self::flag_mask(f);
+        self.flags ^= m;
+        debug!("toggle_flag: f={:?} mask={:04x} flags={:04x}", f, m, self.flags);
     }
 
     pub fn is_flag_set(&self, f: Flags) -> bool {
-        (self.flags & Self::flag_mask(f)) != 0
+        let m = Self::flag_mask(f);
+        (self.flags & m) != 0
     }
 
     pub fn is_halted(&self) -> bool {

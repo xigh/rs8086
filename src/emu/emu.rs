@@ -2,11 +2,14 @@ use std::path::PathBuf;
 
 use tracing::{debug, error, trace};
 
-use super::{Config, Cpu, OpSizeT, Reg16, Reg8, Sreg, Result, OpSize};
+use super::{Config, Cpu, OpSizeT, Reg16, Reg8, Sreg, Result, OpSize, Flags};
 
+#[derive(Default)]
 pub struct EmuOpts {
     pub test_mode: bool,
     pub wait_for_enter: bool,
+    pub dump_regs_each_step: bool,
+    pub dump_regs_on_halt: bool,
 }
 
 pub fn emulate(file: &str, opts: EmuOpts) -> Result<()> {
@@ -88,11 +91,10 @@ pub fn emulate(file: &str, opts: EmuOpts) -> Result<()> {
                         });
                         let ex = cpu.read_mem_ea(ea + 2, OpSize::Byte).unwrap() as u8;
                         if reg != ex {
-                            error!("{}: got 0x{:02X}, expected 0x{:02X}", name, reg, ex);
-                            break;
+                            return Err(format!("{}: got 0x{:02X}, expected 0x{:02X}", name, reg, ex).into());
                         }
                         trace!("{}: {:02X} [OK]", name, reg);
-                        ea += 2;
+                        ea += 3;
                     }
                     "CS" | "ES" | "DS" | "SS" => {
                         let reg = cpu.read_sreg(match name.as_str() {
@@ -104,14 +106,30 @@ pub fn emulate(file: &str, opts: EmuOpts) -> Result<()> {
                         });
                         let ex = cpu.read_mem_ea(ea + 2, OpSize::Word).unwrap();
                         if reg != ex {
-                            error!("{}: got 0x{:04X}, expected 0x{:04X}", name, reg, ex);
-                            break;
+                            return Err(format!("{}: got 0x{:04X}, expected 0x{:04X}", name, reg, ex).into());
                         }
                         trace!("{}: {:04X} [OK]", name, reg);
                         ea += 4;
                     }
                     "CF" | "PF" | "AF" | "ZF" | "SF" | "TF" | "IF" | "DF" | "OF" => {
-                        todo!("flag check");
+                        let f = cpu.is_flag_set(match name.as_str() {
+                            "CF" => Flags::C,
+                            "PF" => Flags::P,
+                            "AF" => Flags::A,
+                            "ZF" => Flags::Z,
+                            "SF" => Flags::S,
+                            "TF" => Flags::T,
+                            "IF" => Flags::I,
+                            "DF" => Flags::D,
+                            "OF" => Flags::O,
+                            _ => unreachable!(),
+                        });
+                        let ex = cpu.read_mem_ea(ea + 2, OpSize::Byte).unwrap();
+                        if (ex != 0) != f {
+                            return Err(format!("{}: got {}, expected {}", name, f, ex != 0).into());
+                        }
+                        trace!("{}: {} [OK]", name, f);
+                        ea += 3;
                     }
                     _ => {
                         debug!("unknown expected debug value: {}", word_to_string(w));
@@ -119,15 +137,23 @@ pub fn emulate(file: &str, opts: EmuOpts) -> Result<()> {
                     }
                 }
             }
+            if opts.dump_regs_on_halt {
+                cpu.dump_regs();
+            }
+            println!("tests successfull");
             return Ok(());
         }
 
         if cpu.is_halted() {
-            println!("CPU halted: not handled yet");
+            if opts.dump_regs_on_halt {
+                cpu.dump_regs();
+            }
             break;
         }
 
-        cpu.dump_regs();
+        if opts.dump_regs_each_step {
+            cpu.dump_regs();
+        }
         cpu.tick();
 
         if opts.wait_for_enter {    
