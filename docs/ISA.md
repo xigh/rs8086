@@ -141,7 +141,7 @@ Table of contents:
     - [ ] SCASW - Scan string word
 - [ ] SHL - Shift logical left
 - [ ] SHR - Shift logical right
-- [ ] STC - Set carry flag
+- [ ] (STC)[#stc---set-carry-flag] - Set carry flag
 - [ ] STD - Set direction flag
 - [ ] STI - Set interrupt flag
 - [ ] STOS - Store string
