@@ -201,17 +201,21 @@ See example in [tests/isa/aas.asm](../tests/isa/aas.asm)
 
 Opcodes: 
 
-| bytes | mnemonic |
-|-------|----------|
-| `10 op r/m` | ADC r/m8, r8 |
-| `11 op r/m` | ADC r/m16, r16 |
-| `12 op r/m` | ADC r/m8, imm8 |
-| `13 op r/m` | ADC r/m16, imm16 |
-| `14` | ADC AL, imm8 |
-| `15` | ADC AX, imm16 |
+| bytes | mnemonic | note |
+|-------|----------|------|
+| `10 r/m` | ADC r/m8, r8 |  |
+| `11 r/m` | ADC r/m16, r16 | |
+| `12 r/m ib` | ADC r/m8, imm8 | |
+| `13 r/m iw` | ADC r/m16, imm16 | |
+| `14 ib` | ADC AL, imm8 | |
+| `15 iw` | ADC AX, imm16 | |
+| `80 /2 ib` | ADC r/m8, imm8 | |
+| `81 /2 iw` | ADC r/m16, imm16 | |
+| `82 /2 ib` | ADC r/m8, imm8 | todo: not in all x86 processors, same as `80 /2 ib` |
+| `83 /2 iw` | ADC r/m16, imm16 | |
 
 ```
-AL = AL + (CF ? 1 : 0)
+dst = dst + src + (CF ? 1 : 0)
 ```
 
 See example in [tests/isa/adc.asm](../tests/isa/adc.asm)
@@ -222,14 +226,24 @@ Opcodes:
 
 | bytes | mnemonic |
 |-------|----------|
-| `00 op r/m` | ADD r/m8, r8 |
-| `01 op r/m` | ADD r/m16, r16 |
-| `02 op r/m` | ADD r/m8, imm8 |
-| `03 op r/m` | ADD r/m16, imm16 |
-| `04` | ADD AL, imm8 |
-| `05` | ADD AX, imm16 |
+| `00 r/m` | ADD r/m8, r8 |
+| `01 r/m` | ADD r/m16, r16 |
+| `02 r/m` | ADD r/m8, imm8 |
+| `03 r/m` | ADD r/m16, imm16 |
+| `04 ib` | ADD AL, imm8 |
+| `05 iw` | ADD AX, imm16 |
+| `04 ib` | ADC AL, imm8 | |
+| `05 iw` | ADC AX, imm16 | |
+| `80 /0 ib` | ADC r/m8, imm8 | |
+| `81 /0 iw` | ADC r/m16, imm16 | |
+| `82 /0 ib` | ADC r/m8, imm8 | todo: not in all x86 processors, same as `80 /0 ib` |
+| `83 /0 iw` | ADC r/m16, imm16 | |
 
-todo
+```
+dst = dst + src
+```
+
+See example in [tests/isa/add.asm](../tests/isa/add.asm)
 
 ### AND - And
 
