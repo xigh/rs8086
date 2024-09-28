@@ -30,6 +30,8 @@ I plan to add :
 
 This project is licensed under the MIT license. Do whatever you want with it, but keep in mind that it may contain bugs.
 
+See [LICENSE](./LICENSE) file.
+
 ## How to compile a test ROM :
 
 For the moment, you'll require [NASM](https://www.nasm.us/) to assemble the file.
