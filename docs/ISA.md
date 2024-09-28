@@ -442,7 +442,7 @@ See example in [tests/isa/add.asm](../tests/isa/add.asm)
 | A- | | | | | | | | |
 | B- | | | | | | | | |
 | C- | | | | | | | | |
-| D- | | | | | $${\color{red}AAM}$$ | AAD | | |
+| D- | | | | | AAM | AAD | | |
 | E- | | | | | | | | |
 | F- | | | | | | | | |
 
