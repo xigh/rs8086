@@ -18,12 +18,14 @@ _start:
         EXPECT  __FILE__, __LINE__, AX, 1 ; this is an error as by default AX is initialized to 0x0000
 ```
 
+Now, compile and run the test in the emulator:
+
 ```bash
-zexigh@white:~/sources/rs8086$ nasm -f bin -DDEBUG -Itests -otests/error.bin tests/error.asm 
-zexigh@white:~/sources/rs8086$ cargo r --bin emu8086 -- -test -hide-header -dump-regs-on-halt tests/error.bin 
+$ nasm -f bin -DDEBUG -Itests -otests/error.bin tests/error.asm 
+$ cargo r --bin emu8086 -- -test -hide-header -dump-regs-on-halt tests/error.bin 
 ```
 
-will output:
+this will output:
 
 ```text
     Finished dev [unoptimized + debuginfo] target(s) in 0.01s
@@ -31,6 +33,8 @@ will output:
 0F0000 f4               hlt
 tests/error.bin: tests/error.asm:9: AX: got 0x0000, expected 0x0001
 ```
+
+Here you can see that the error message is displayed and the program stops, showing where the error is (line 9 in `tests/error.asm`).
 
 ## how to test `aaa` instruction
 
