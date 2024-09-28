@@ -47,6 +47,12 @@ Of course you'll need [Rust](https://www.rust-lang.org/tools/install) to build t
 cargo run --bin=emu8086 -- <rom-file.bin>
 ```
 
+## Screenshots
+
+### 2024-09-27 - first approach
+
 ![capture-2024-09-27](./docs/imgs/capture-2024-09-27.png)
+
+### 2024-09-28 - started to automate the testing
 
 ![capture-2024-09-28](./docs/imgs/capture-2024-09-28.png)
