@@ -14,5 +14,5 @@ test1:
         HLT
 
         ; must come after HLT or RET followed by a HLT (so that the emulator can check the result)
-        EXPECT  AX, 0x0005
+        EXPECT  __FILE__, __LINE__, AX, 0x0005
         ; todo: flags

@@ -1,6 +1,6 @@
 use std::env::args;
 
-use tracing::{error, Level};
+use tracing::Level;
 
 pub type Result<T> = std::result::Result<T, Box<dyn std::error::Error>>;
 
@@ -16,7 +16,7 @@ pub use x86::{Config, Cpu, Flags, OpSize};
 pub use lib8086::{Arg, Cc, Decoder, Inst, Op, OpSizeT, Reg16, Reg8, Rep, Sreg};
 
 fn main() -> Result<()> {
-    let mut binary = String::new();
+    let mut binaries = vec![];
     let mut opts = EmuOpts::default();
     let mut level = Level::ERROR;
     let mut hide_header = false;
@@ -77,12 +77,7 @@ fn main() -> Result<()> {
             return Ok(());
         }
 
-        if !binary.is_empty() {
-            error!("Multiple files are not supported");
-            return Ok(());
-        }
-
-        binary = arg;
+        binaries.push(arg);
     }
 
     if !hide_header {
@@ -96,5 +91,15 @@ fn main() -> Result<()> {
         .with_target(true)
         .init();
 
-    emulate(&binary, opts)
+    for binary in binaries {
+        match emulate(&binary, &opts) {
+            Ok(_) => {}
+            Err(e) => {
+                eprintln!("{}: {}", binary, e);
+                break;
+            }
+        }
+    }
+
+    Ok(())
 }

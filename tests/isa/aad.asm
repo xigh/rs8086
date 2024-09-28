@@ -10,5 +10,5 @@ _start:
 %include "expect.inc"
 
         ; must come after HLT
-        EXPECT  AX, 0x000F
-        EXPECT  CF, 1
+        EXPECT  __FILE__, __LINE__, AX, 0x000F
+        EXPECT  __FILE__, __LINE__, CF, 1

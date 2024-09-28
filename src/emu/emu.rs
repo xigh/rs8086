@@ -1,8 +1,8 @@
 use std::path::PathBuf;
 
-use tracing::{debug, error, trace};
+use tracing::{debug, trace};
 
-use super::{Config, Cpu, OpSizeT, Reg16, Reg8, Sreg, Result, OpSize, Flags};
+use super::{Config, Cpu, Flags, OpSize, OpSizeT, Reg16, Reg8, Result, Sreg};
 
 #[derive(Default)]
 pub struct EmuOpts {
@@ -12,7 +12,7 @@ pub struct EmuOpts {
     pub dump_regs_on_halt: bool,
 }
 
-pub fn emulate(file: &str, opts: EmuOpts) -> Result<()> {
+pub fn emulate(file: &str, opts: &EmuOpts) -> Result<()> {
     let cfg = Config {
         bios_file: PathBuf::from(file),
         ram_size: 0xf0000,
@@ -42,7 +42,7 @@ pub fn emulate(file: &str, opts: EmuOpts) -> Result<()> {
 
     loop {
         if opts.test_mode && cpu.is_halted() {
-            // todo: check "expect" pseudo-instruction after ip (if any)
+            trace!("debug: cpu is halted, executing tests");
 
             let word_to_string = |w: u16| {
                 let second_char = (w >> 8 & 0xFF) as u8;
@@ -53,10 +53,38 @@ pub fn emulate(file: &str, opts: EmuOpts) -> Result<()> {
             let ip = cpu.read_ip();
             let cs = Sreg::CS;
             let mut ea = cpu.calc_ea(cs, ip);
+            let mut file = String::new();
 
-            while let Some(w) = cpu.read_mem_ea(ea, OpSize::Word) {
+            while let Some(line) = cpu.read_mem_ea(ea, OpSize::Word) {
+                ea += 2;
+
+                trace!("debug: line: {:04X} at 0x{:05X}", line, ea);
+
+                let Some(w) = cpu.read_mem_ea(ea, OpSize::Word) else {
+                    debug!("expect-data ^^ found, but failed to read cmd word");
+                    return Ok(());
+                };
+
                 let name = word_to_string(w);
                 match name.as_str() {
+                    "^^" => {
+                        let debug_ea = ea;
+                        ea += 2;
+                        loop {
+                            let Some(b) = cpu.read_mem_ea(ea, OpSize::Byte) else {
+                                debug!("found '^^' at 0x{:05X}, but failed to read byte", debug_ea);
+                                return Ok(());
+                            };
+                            ea += 1;
+                            if b == 0 {
+                                break;
+                            }
+                            let b = b as u8;
+                            file.push(b as char);
+                        }
+                        trace!("debug: file: {:?}", file);
+                        continue
+                    }
                     "AX" | "BX" | "CX" | "DX" | "SI" | "DI" | "BP" | "SP" => {
                         let reg = cpu.read_reg16(match name.as_str() {
                             "AX" => Reg16::AX,
@@ -71,8 +99,11 @@ pub fn emulate(file: &str, opts: EmuOpts) -> Result<()> {
                         });
                         let ex = cpu.read_mem_ea(ea + 2, OpSize::Word).unwrap();
                         if reg != ex {
-                            error!("{}: got 0x{:04X}, expected 0x{:04X}", name, reg, ex);
-                            break;
+                            return Err(format!(
+                                "{}:{}: {}: got 0x{:04X}, expected 0x{:04X}",
+                                file, line, name, reg, ex
+                            )
+                            .into());
                         }
                         trace!("{}: {:04X} [OK]", name, reg);
                         ea += 4;
@@ -91,7 +122,11 @@ pub fn emulate(file: &str, opts: EmuOpts) -> Result<()> {
                         });
                         let ex = cpu.read_mem_ea(ea + 2, OpSize::Byte).unwrap() as u8;
                         if reg != ex {
-                            return Err(format!("{}: got 0x{:02X}, expected 0x{:02X}", name, reg, ex).into());
+                            return Err(format!(
+                                "{}:{}: {}: got 0x{:02X}, expected 0x{:02X}",
+                                file, line, name, reg, ex
+                            )
+                            .into());
                         }
                         trace!("{}: {:02X} [OK]", name, reg);
                         ea += 3;
@@ -106,7 +141,11 @@ pub fn emulate(file: &str, opts: EmuOpts) -> Result<()> {
                         });
                         let ex = cpu.read_mem_ea(ea + 2, OpSize::Word).unwrap();
                         if reg != ex {
-                            return Err(format!("{}: got 0x{:04X}, expected 0x{:04X}", name, reg, ex).into());
+                            return Err(format!(
+                                "{}:{}: {}: got 0x{:04X}, expected 0x{:04X}",
+                                file, line, name, reg, ex
+                            )
+                            .into());
                         }
                         trace!("{}: {:04X} [OK]", name, reg);
                         ea += 4;
@@ -126,21 +165,35 @@ pub fn emulate(file: &str, opts: EmuOpts) -> Result<()> {
                         });
                         let ex = cpu.read_mem_ea(ea + 2, OpSize::Byte).unwrap();
                         if (ex != 0) != f {
-                            return Err(format!("{}: got {}, expected {}", name, f, ex != 0).into());
+                            return Err(format!(
+                                "{}:{}: {}: got {}, expected {}",
+                                file,
+                                line,
+                                name,
+                                f,
+                                ex != 0
+                            )
+                            .into());
                         }
                         trace!("{}: {} [OK]", name, f);
                         ea += 3;
                     }
                     _ => {
-                        debug!("unknown expected debug value: {}", word_to_string(w));
-                        break;
+                        return Err(
+                            format!("{}:{}: unknown expected debug value: {}",
+                                file,
+                                line,
+                                word_to_string(w)
+                            )
+                            .into(),
+                        );
                     }
                 }
             }
             if opts.dump_regs_on_halt {
                 cpu.dump_regs();
             }
-            println!("tests successfull");
+            println!("{}: tests successfull", file);
             return Ok(());
         }
 
@@ -156,7 +209,7 @@ pub fn emulate(file: &str, opts: EmuOpts) -> Result<()> {
         }
         cpu.tick();
 
-        if opts.wait_for_enter {    
+        if opts.wait_for_enter {
             println!("press return to continue...");
             let mut input = String::new();
             std::io::stdin().read_line(&mut input).unwrap();
