@@ -407,7 +407,7 @@ See example in [tests/isa/add.asm](../tests/isa/add.asm)
 
 ### XOR - Exclusive or
 
-## Opcode map (todo)
+## Opcode map
 
 ### low nibble
 
