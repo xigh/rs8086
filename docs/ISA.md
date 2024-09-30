@@ -71,7 +71,7 @@ This flag is set if the last arithmetic operation generated an overflow.
 
 ## Instructions
 
-- [X] [AAA](#aaa---ascii-adjust-after-addition) - ASCII adjust after addition
+- [ ] [AAA](#aaa---ascii-adjust-after-addition) - ASCII adjust after addition
 - [ ] [AAD](#aad---ascii-adjust-after-division) - ASCII adjust after division
 - [ ] AAM - ASCII adjust after multiplication
 - [ ] AAS - ASCII adjust after subtraction
@@ -151,7 +151,7 @@ This flag is set if the last arithmetic operation generated an overflow.
     - [ ] MOVSW - Move string word
 - [ ] MUL - Multiply
 - [ ] NEG - Negate
-- [ ] NOP - No operation
+- [X] NOP - No operation
 - [ ] NOT - Not
 - [ ] OR - Or
 - [ ] OUT - Output
