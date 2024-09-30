@@ -83,7 +83,7 @@ This flag is set if the last arithmetic operation generated an overflow.
 - [X] CLC - Clear carry flag
 - [X] CLD - Clear direction flag
 - [X] CLI - Clear interrupt flag
-- [ ] CMC - Complement carry flag
+- [X] CMC - Complement carry flag
 - [ ] CMP - Compare
 - [ ] CMPS - Compare strings
     - [ ] CMPSB - Compare strings byte
