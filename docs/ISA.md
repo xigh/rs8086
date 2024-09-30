@@ -80,9 +80,9 @@ This flag is set if the last arithmetic operation generated an overflow.
 - [ ] AND - And
 - [ ] CALL - Call
 - [ ] CBW - Convert byte to word
-- [ ] CLC - Clear carry flag
-- [ ] CLD - Clear direction flag
-- [ ] CLI - Clear interrupt flag
+- [X] CLC - Clear carry flag
+- [X] CLD - Clear direction flag
+- [X] CLI - Clear interrupt flag
 - [ ] CMC - Complement carry flag
 - [ ] CMP - Compare
 - [ ] CMPS - Compare strings
@@ -93,7 +93,7 @@ This flag is set if the last arithmetic operation generated an overflow.
 - [ ] DAS - Decimal adjust after subtraction
 - [ ] DEC - Decrement
 - [ ] DIV - Divide
-- [ ] HLT - Halt
+- [X] HLT - Halt
 - [ ] IDIV
 - [ ] IMUL - Integer multiply
 - [ ] IN - Input
@@ -181,9 +181,9 @@ This flag is set if the last arithmetic operation generated an overflow.
     - [ ] SCASW - Scan string word
 - [ ] SHL - Shift logical left
 - [ ] SHR - Shift logical right
-- [ ] (STC)[#stc---set-carry-flag] - Set carry flag
-- [ ] STD - Set direction flag
-- [ ] STI - Set interrupt flag
+- [X] (STC)[#stc---set-carry-flag] - Set carry flag
+- [X] STD - Set direction flag
+- [X] STI - Set interrupt flag
 - [ ] STOS - Store string
     - [ ] STOSB - Store string byte
     - [ ] STOSW - Store string word
