@@ -714,14 +714,14 @@ impl<'a> Decoder<'a> {
             0x1 => { // 0xf1 -> int 1
                 Some(Op::Invalid(Invalid::UnexpectedByte(b0)))
             },
-            0x2 => { // 0xf2 -> repne
+            0x2 => { // 0xf2 -> repne/repnz
                 if self.rep.is_some() {
                     return Some(Op::Invalid(Invalid::TooManyPrefix));
                 }
                 self.rep = Some(Rep::Repne);
                 self.next_o()
             },
-            0x3 => { // 0xf3 -> rep
+            0x3 => { // 0xf3 -> rep/repe/repz
                 if self.rep.is_some() {
                     return Some(Op::Invalid(Invalid::TooManyPrefix));
                 }
@@ -734,35 +734,35 @@ impl<'a> Decoder<'a> {
             0x5 => { // 0xf5 -> cmc
                 Some(Op::Cmc)
             },
-            0x6 => { // 0xf6 -> clc
+            0x6 => { // 0xf6 -> grp3a
+                unimplemented!()
+            },
+            0x7 => { // 0xf7 -> grp3b
+                unimplemented!()
+            },
+            0x8 => { // 0xf8 -> clc
                 Some(Op::Clc)
-            },
-            0x7 => { // 0xf7 -> sti
-                Some(Op::Sti)
-            },
-            0x8 => { // 0xf8 -> cli
-                Some(Op::Cli)
             },
             0x9 => { // 0xf9 -> stc
                 Some(Op::Stc)
             },
-            0xa => { // 0xfa -> cld
+            0xa => { // 0xfa -> cli
+                Some(Op::Cli)
+            },
+            0xb => { // 0xfb -> sti
+                Some(Op::Sti)
+            },
+            0xc => { // 0xfc -> cld
                 Some(Op::Cld)
             },
-            0xb => { // 0xfb -> std
+            0xd => { // 0xfd -> std
                 Some(Op::Std)
             },
-            0xc => { // 0xfc -> inc ax
-                Some(Op::Inc(Arg::Reg16(Reg16::AX)))
-            },
-            0xd => { // 0xfd -> dec ax
-                Some(Op::Dec(Arg::Reg16(Reg16::AX)))
-            },
             0xe => { 
-                unimplemented!("0x{:02x}", b0)
+                unimplemented!("0x{:02x}", b0) // grp4
             },
             0xf => {
-                unimplemented!("0x{:02x}", b0)
+                unimplemented!("0x{:02x}", b0) // grp5
             }
             _ => unreachable!(),
         }
