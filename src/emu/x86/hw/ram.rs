@@ -1,3 +1,5 @@
+use tracing::{info, warn, trace};
+
 use super::{Result, Device, MemMap, IOMap, MemAddrT, OpSizeT, OpSize, MemOps, Config};
 
 pub struct DeviceRAM {
@@ -28,9 +30,9 @@ impl MemOps for DeviceRAM {
         let addr = addr as usize;
         let offset = addr - self.start as usize;
 
-        println!("read {:x} offset {:x}", addr, offset);
+        info!("read {:x} offset {:x}", addr, offset);
         if offset >= self.bytes.len() {
-            println!("out of bounds");
+            warn!("out of bounds");
             return 0;
         }
 
@@ -39,12 +41,16 @@ impl MemOps for DeviceRAM {
             OpSize::Byte => b0 as OpSizeT,
             OpSize::Word => {
                 if offset + 1 >= self.bytes.len() {
-                    println!("out of bounds");
+                    warn!("out of bounds");
                     return 0;
                 }
 
                 let b1 = self.bytes[offset + 1] as OpSizeT;
-                (b1 << 8) | b0
+                let w = (b1 << 8) | b0;
+
+                trace!("got {:04x}", w);
+
+                w
             }
         }
     }
@@ -53,9 +59,9 @@ impl MemOps for DeviceRAM {
         let addr = addr as usize;
         let offset = addr - self.start as usize;
 
-        println!("write {:x} offset {:x}", addr, offset);
+        info!("write {:x} offset {:x} size {:?}", addr, offset, sz);
         if offset >= self.bytes.len() {
-            println!("out of bounds");
+            warn!("out of bounds");
             return;
         }
 
@@ -63,7 +69,7 @@ impl MemOps for DeviceRAM {
             OpSize::Byte => self.bytes[offset] = data as u8,
             OpSize::Word => {
                 if offset + 1 >= self.bytes.len() {
-                    println!("out of bounds");
+                    warn!("out of bounds");
                     return;
                 }
 

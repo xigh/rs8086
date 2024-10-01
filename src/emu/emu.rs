@@ -55,7 +55,7 @@ pub fn emulate(file: &str, opts: &EmuOpts) -> Result<()> {
             let mut ea = cpu.calc_ea(cs, ip);
             let mut file = String::new();
 
-            while let Some(line) = cpu.read_mem_ea(ea, OpSize::Word) {
+            'debug_loop: while let Some(line) = cpu.read_mem_ea(ea, OpSize::Word) {
                 ea += 2;
 
                 trace!("debug: line: {:04X} at 0x{:05X}", line, ea);
@@ -83,7 +83,7 @@ pub fn emulate(file: &str, opts: &EmuOpts) -> Result<()> {
                             file.push(b as char);
                         }
                         trace!("debug: file: {:?}", file);
-                        continue
+                        continue;
                     }
                     "AX" | "BX" | "CX" | "DX" | "SI" | "DI" | "BP" | "SP" => {
                         let reg = cpu.read_reg16(match name.as_str() {
@@ -179,14 +179,16 @@ pub fn emulate(file: &str, opts: &EmuOpts) -> Result<()> {
                         ea += 3;
                     }
                     _ => {
-                        return Err(
-                            format!("{}:{}: unknown expected debug value: {}",
-                                file,
-                                line,
-                                word_to_string(w)
-                            )
-                            .into(),
-                        );
+                        if file == "" {
+                            break 'debug_loop;
+                        }
+                        return Err(format!(
+                            "{}:{}: unknown expected debug value: {}",
+                            file,
+                            line,
+                            word_to_string(w)
+                        )
+                        .into());
                     }
                 }
             }

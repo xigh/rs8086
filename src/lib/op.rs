@@ -30,8 +30,6 @@ pub enum Op {
     Push(Arg),
     Pop(Arg),
 
-    Ret,
-
     Aaa,
     Aad(u8),
     Aam(u8),
@@ -45,7 +43,10 @@ pub enum Op {
 
     Jcc(Cc, i8),
 
-    JmpFar(Arg, Arg),
+    Call(Arg),
+    Ret,
+
+    JmpFar(Arg, Arg), // Arg can be Far
 
     Test(Arg, Arg),
     Xchg(Arg, Arg),
@@ -149,7 +150,7 @@ impl From<u8> for Sreg {
             1 => Sreg::CS,
             2 => Sreg::SS,
             3 => Sreg::DS,
-            _ => unreachable!(),
+            _ => unreachable!("unexpected value Sreg={}", b),
         }
     }
 }

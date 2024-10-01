@@ -1,5 +1,6 @@
-use crate::op::{Arg, Cc, Inst, Invalid, Op, Reg16, Reg8, Rep, Sreg};
+// use tracing::debug;
 
+use crate::op::{Arg, Cc, Inst, Invalid, Op, Reg16, Reg8, Rep, Sreg};
 
 pub struct Decoder<'a> {
     sreg: Option<Sreg>,
@@ -62,7 +63,7 @@ impl<'a> Decoder<'a> {
 
     fn nextw(&mut self) -> Option<u16> {
         let b1 = self.nextb()?;
-        let b2 = self.nextb()?; 
+        let b2 = self.nextb()?;
         Some((b2 as u16) << 8 | b1 as u16)
     }
 
@@ -72,7 +73,7 @@ impl<'a> Decoder<'a> {
                 let b1 = self.nextb()?;
                 let (a0, a1) = modrm8(b1);
                 Some(Op::Add(a0, a1))
-            },
+            }
             0x1 => {
                 let b1 = self.nextb()?;
                 let (a0, a1) = modrm16(b1);
@@ -82,7 +83,7 @@ impl<'a> Decoder<'a> {
                 let b1 = self.nextb()?;
                 let (a0, a1) = modrm8(b1);
                 Some(Op::Add(a1, a0))
-            },
+            }
             0x3 => {
                 let b1 = self.nextb()?;
                 let (a0, a1) = modrm16(b1);
@@ -91,52 +92,44 @@ impl<'a> Decoder<'a> {
             0x4 => {
                 let b1 = self.nextb()?;
                 Some(Op::Add(Arg::Reg8(Reg8::AL), Arg::Uimm8(b1)))
-            },
+            }
             0x5 => {
                 let w = self.nextw()?;
                 Some(Op::Add(Arg::Reg16(Reg16::AX), Arg::Uimm16(w)))
-            },
-            0x6 => {
-                Some(Op::Push(Arg::Sreg(Sreg::ES)))
-            },
-            0x7 => {
-                Some(Op::Pop(Arg::Sreg(Sreg::ES)))
-            },
+            }
+            0x6 => Some(Op::Push(Arg::Sreg(Sreg::ES))),
+            0x7 => Some(Op::Pop(Arg::Sreg(Sreg::ES))),
 
             0x8 => {
                 let b1 = self.nextb()?;
                 let (a0, a1) = modrm8(b1);
                 Some(Op::Or(a0, a1))
-            },
+            }
             0x9 => {
                 let b1 = self.nextb()?;
                 let (a0, a1) = modrm16(b1);
                 Some(Op::Or(a1, a0))
-            },
+            }
             0xa => {
                 let b1 = self.nextb()?;
                 let (a0, a1) = modrm8(b1);
                 Some(Op::Or(a0, a1))
-            },
+            }
             0xb => {
                 let b1 = self.nextb()?;
                 let (a0, a1) = modrm16(b1);
                 Some(Op::Or(a1, a0))
-            },
+            }
             0xc => {
                 let b1 = self.nextb()?;
                 Some(Op::Or(Arg::Reg8(Reg8::AL), Arg::Uimm8(b1)))
-            },
+            }
             0xd => {
                 let w = self.nextw()?;
                 Some(Op::Or(Arg::Reg16(Reg16::AX), Arg::Uimm16(w)))
-            },
-            0xe => {
-                Some(Op::Push(Arg::Sreg(Sreg::CS)))
-            },
-            0xf => {
-                Some(Op::Invalid(Invalid::UnexpectedByte(b0)))
-            },
+            }
+            0xe => Some(Op::Push(Arg::Sreg(Sreg::CS))),
+            0xf => Some(Op::Invalid(Invalid::UnexpectedByte(b0))),
 
             _ => unreachable!(),
         }
@@ -172,12 +165,8 @@ impl<'a> Decoder<'a> {
                 let w = self.nextw()?;
                 Some(Op::Adc(Arg::Reg16(Reg16::AX), Arg::Uimm16(w)))
             }
-            0x6 => {
-                Some(Op::Push(Arg::Sreg(Sreg::SS)))
-            }
-            0x7 => {
-                Some(Op::Pop(Arg::Sreg(Sreg::SS)))
-            }
+            0x6 => Some(Op::Push(Arg::Sreg(Sreg::SS))),
+            0x7 => Some(Op::Pop(Arg::Sreg(Sreg::SS))),
 
             0x8 => {
                 let b1 = self.nextb()?;
@@ -207,12 +196,8 @@ impl<'a> Decoder<'a> {
                 let w = self.nextw()?;
                 Some(Op::Sbb(Arg::Reg16(Reg16::AX), Arg::Uimm16(w)))
             }
-            0xe => {
-                Some(Op::Push(Arg::Sreg(Sreg::DS)))
-            }
-            0xf => {
-                Some(Op::Pop(Arg::Sreg(Sreg::DS)))
-            }
+            0xe => Some(Op::Push(Arg::Sreg(Sreg::DS))),
+            0xf => Some(Op::Pop(Arg::Sreg(Sreg::DS))),
 
             _ => unreachable!(),
         }
@@ -255,9 +240,7 @@ impl<'a> Decoder<'a> {
                 self.sreg = Some(Sreg::ES);
                 self.next_o()
             }
-            0x7 => {
-                Some(Op::Daa)
-            }
+            0x7 => Some(Op::Daa),
 
             0x8 => {
                 let b1 = self.nextb()?;
@@ -294,9 +277,7 @@ impl<'a> Decoder<'a> {
                 self.sreg = Some(Sreg::CS);
                 self.next_o()
             }
-            0xf => {
-                Some(Op::Das)
-            }
+            0xf => Some(Op::Das),
 
             _ => unreachable!(),
         }
@@ -308,79 +289,75 @@ impl<'a> Decoder<'a> {
                 let b1 = self.nextb()?;
                 let (a0, a1) = modrm8(b1);
                 Some(Op::Xor(a0, a1))
-            },
+            }
             0x1 => {
                 let b1 = self.nextb()?;
                 let (a0, a1) = modrm16(b1);
                 Some(Op::Xor(a1, a0))
-            },
+            }
             0x2 => {
                 let b1 = self.nextb()?;
                 let (a0, a1) = modrm8(b1);
                 Some(Op::Xor(a0, a1))
-            },
+            }
             0x3 => {
                 let b1 = self.nextb()?;
                 let (a0, a1) = modrm16(b1);
                 Some(Op::Xor(a1, a0))
-            },
+            }
             0x4 => {
                 let b1 = self.nextb()?;
                 Some(Op::Xor(Arg::Reg8(Reg8::AL), Arg::Uimm8(b1)))
-            },
+            }
             0x5 => {
                 let w = self.nextw()?;
                 Some(Op::Xor(Arg::Reg16(Reg16::AX), Arg::Uimm16(w)))
-            },
+            }
             0x6 => {
                 if self.sreg == Some(Sreg::SS) {
                     return Some(Op::Invalid(Invalid::TooManyPrefix));
                 }
                 self.sreg = Some(Sreg::SS);
                 self.next_o()
-            },
-            0x7 => {
-                Some(Op::Aaa)
-            },
+            }
+            0x7 => Some(Op::Aaa),
 
             0x8 => {
                 let b1 = self.nextb()?;
                 let (a0, a1) = modrm8(b1);
                 Some(Op::Cmp(a0, a1))
-            },
+            }
             0x9 => {
                 let b1 = self.nextb()?;
                 let (a0, a1) = modrm16(b1);
                 Some(Op::Cmp(a1, a0))
-            },
+            }
             0xa => {
                 let b1 = self.nextb()?;
                 let (a0, a1) = modrm8(b1);
                 Some(Op::Cmp(a0, a1))
-            },
+            }
             0xb => {
                 let b1 = self.nextb()?;
                 let (a0, a1) = modrm16(b1);
                 Some(Op::Cmp(a1, a0))
-            },
+            }
             0xc => {
                 let b1 = self.nextb()?;
                 Some(Op::Cmp(Arg::Reg8(Reg8::AL), Arg::Uimm8(b1)))
-            },
+            }
             0xd => {
                 let w = self.nextw()?;
                 Some(Op::Cmp(Arg::Reg16(Reg16::AX), Arg::Uimm16(w)))
-            },
+            }
             0xe => {
                 if self.sreg == Some(Sreg::DS) {
                     return Some(Op::Invalid(Invalid::TooManyPrefix));
                 }
                 self.sreg = Some(Sreg::DS);
                 self.next_o()
-            },
-            0xf => {
-                Some(Op::Aas)
-            },
+            }
+            0xf => Some(Op::Aas),
 
             _ => unreachable!(),
         }
@@ -523,9 +500,7 @@ impl<'a> Decoder<'a> {
                 Some(Op::Mov(a1, a0))
             }
 
-            0xc => {
-                Some(Op::Invalid(Invalid::UnexpectedByte(b0)))
-            }
+            0xc => Some(Op::Invalid(Invalid::UnexpectedByte(b0))),
             0xd => {
                 let b1 = self.nextb()?;
                 let (a0, a1) = modrm16(b1);
@@ -533,12 +508,13 @@ impl<'a> Decoder<'a> {
             }
             0xe => {
                 let b1 = self.nextb()?;
-                let (_, a1) = modrm16(b1);
+                let (a0, _) = modrm16(b1);
                 let sr = b1 >> 3;
                 if sr & 0b100 != 0 {
-                    return Some(Op::Invalid(Invalid::UnexpectedBytes(b0, b1)))
+                    return Some(Op::Invalid(Invalid::UnexpectedBytes(b0, b1)));
                 }
-                Some(Op::Mov(Arg::Sreg(Sreg::from(sr)), a1))
+                let sr = sr % 0b11;
+                Some(Op::Mov(Arg::Sreg(Sreg::from(sr)), a0))
             }
             0xf => {
                 let b1 = self.nextb()?;
@@ -557,7 +533,7 @@ impl<'a> Decoder<'a> {
         match b0 & 0xf {
             0x0 => Some(Op::Nop),
             0x1..=0xf => unimplemented!("0x{:02x}", b0),
-            _ => unreachable!()
+            _ => unreachable!(),
         }
     }
 
@@ -572,16 +548,10 @@ impl<'a> Decoder<'a> {
         let n0 = b0 & 0xf;
         if (0x0..=0x7).contains(&n0) {
             let b1 = self.nextb()?;
-            Some(Op::Mov(
-                Arg::Reg8(From::from(n0 & 0b11)),
-                Arg::Uimm8(b1),
-            ))
+            Some(Op::Mov(Arg::Reg8(From::from(n0 & 0b111)), Arg::Uimm8(b1)))
         } else if (0x8..=0xf).contains(&n0) {
             let w1 = self.nextw()?;
-            Some(Op::Mov(
-                Arg::Reg16(From::from(n0 & 0b11)),
-                Arg::Uimm16(w1),
-            ))
+            Some(Op::Mov(Arg::Reg16(From::from(n0 & 0b111)), Arg::Uimm16(w1)))
         } else {
             unreachable!()
         }
@@ -589,18 +559,22 @@ impl<'a> Decoder<'a> {
 
     fn next_c(&mut self, b0: u8) -> Option<Op> {
         match b0 & 0xf {
-            0x0 => { // 0xc0 -> 
+            0x0 => {
+                // 0xc0 ->
                 unimplemented!("0x{:02x}", b0)
-            },
-            0x1 => { // 0xc1 -> ret
+            }
+            0x1 => {
+                // 0xc1 -> ret
                 unimplemented!("0x{:02x}", b0)
-            },
-            0x2 => { // 0xc2 -> ret
+            }
+            0x2 => {
+                // 0xc2 -> ret
                 unimplemented!("0x{:02x}", b0)
-            },
-            0x3 => { // 0xc3 -> ret
+            }
+            0x3 => {
+                // 0xc3 -> ret
                 Some(Op::Ret)
-            },
+            }
             0x4..=0xf => unimplemented!("0x{:02x}", b0),
             _ => unreachable!(),
         }
@@ -610,56 +584,56 @@ impl<'a> Decoder<'a> {
         match b0 & 0xf {
             0x0 => {
                 unimplemented!("0x{:02x}", b0)
-            },
+            }
             0x1 => {
                 unimplemented!("0x{:02x}", b0)
-            },
+            }
             0x2 => {
                 unimplemented!("0x{:02x}", b0)
-            },
+            }
             0x3 => {
                 unimplemented!("0x{:02x}", b0)
-            },
+            }
             0x4 => {
                 // 0xd4 -> aam
                 let b1 = self.nextb()?;
                 Some(Op::Aam(b1))
-            },
+            }
             0x5 => {
                 // 0xd5 -> aad
                 let b1 = self.nextb()?;
                 Some(Op::Aad(b1))
-            },
+            }
             0x6 => {
                 unimplemented!("0x{:02x}", b0)
-            },
+            }
             0x7 => {
                 unimplemented!("0x{:02x}", b0)
-            },
+            }
             0x8 => {
                 unimplemented!("0x{:02x}", b0)
-            },
+            }
             0x9 => {
                 unimplemented!("0x{:02x}", b0)
-            },
+            }
             0xa => {
                 unimplemented!("0x{:02x}", b0)
-            },
+            }
             0xb => {
                 unimplemented!("0x{:02x}", b0)
-            },
+            }
             0xc => {
                 unimplemented!("0x{:02x}", b0)
-            },
+            }
             0xd => {
                 unimplemented!("0x{:02x}", b0)
-            },
+            }
             0xe => {
                 unimplemented!("0x{:02x}", b0)
-            },
+            }
             0xf => {
                 unimplemented!("0x{:02x}", b0)
-            },
+            }
             _ => unreachable!(),
         }
     }
@@ -682,16 +656,17 @@ impl<'a> Decoder<'a> {
                 Some(Op::Out(Arg::Uimm8(b1), Arg::Reg8(Reg8::AL)))
             }
             0x7 => unimplemented!("0x{:02x}", b0),
-            0x8 => unimplemented!("0x{:02x}", b0),
+            0x8 => {
+                // e8 => CALL rel16
+                let w1 = self.nextw()? as i16;
+                Some(Op::Call(Arg::Imm16(w1)))
+            }
             0x9 => unimplemented!("0x{:02x}", b0),
             0xa => {
                 // ea -> jmp far
                 let w1 = self.nextw()?;
                 let w2 = self.nextw()?;
-                Some(Op::JmpFar(
-                    Arg::Uimm16(w2), 
-                    Arg::Uimm16(w1),
-                ))
+                Some(Op::JmpFar(Arg::Uimm16(w2), Arg::Uimm16(w1)))
             }
             0xb => unimplemented!("0x{:02x}", b0),
             0xc => unimplemented!("0x{:02x}", b0),
@@ -711,56 +686,69 @@ impl<'a> Decoder<'a> {
                 self.lock = true;
                 self.next_o()
             }
-            0x1 => { // 0xf1 -> int 1
+            0x1 => {
+                // 0xf1 -> int 1
                 Some(Op::Invalid(Invalid::UnexpectedByte(b0)))
-            },
-            0x2 => { // 0xf2 -> repne/repnz
+            }
+            0x2 => {
+                // 0xf2 -> repne/repnz
                 if self.rep.is_some() {
                     return Some(Op::Invalid(Invalid::TooManyPrefix));
                 }
                 self.rep = Some(Rep::Repne);
                 self.next_o()
-            },
-            0x3 => { // 0xf3 -> rep/repe/repz
+            }
+            0x3 => {
+                // 0xf3 -> rep/repe/repz
                 if self.rep.is_some() {
                     return Some(Op::Invalid(Invalid::TooManyPrefix));
                 }
                 self.rep = Some(Rep::Rep);
                 self.next_o()
             }
-            0x4 => { // 0xf4 -> hlt
+            0x4 => {
+                // 0xf4 -> hlt
                 Some(Op::Hlt)
-            },
-            0x5 => { // 0xf5 -> cmc
+            }
+            0x5 => {
+                // 0xf5 -> cmc
                 Some(Op::Cmc)
-            },
-            0x6 => { // 0xf6 -> grp3a
+            }
+            0x6 => {
+                // 0xf6 -> grp3a
                 unimplemented!()
-            },
-            0x7 => { // 0xf7 -> grp3b
+            }
+            0x7 => {
+                // 0xf7 -> grp3b
                 unimplemented!()
-            },
-            0x8 => { // 0xf8 -> clc
+            }
+            0x8 => {
+                // 0xf8 -> clc
                 Some(Op::Clc)
-            },
-            0x9 => { // 0xf9 -> stc
+            }
+            0x9 => {
+                // 0xf9 -> stc
                 Some(Op::Stc)
-            },
-            0xa => { // 0xfa -> cli
+            }
+            0xa => {
+                // 0xfa -> cli
                 Some(Op::Cli)
-            },
-            0xb => { // 0xfb -> sti
+            }
+            0xb => {
+                // 0xfb -> sti
                 Some(Op::Sti)
-            },
-            0xc => { // 0xfc -> cld
+            }
+            0xc => {
+                // 0xfc -> cld
                 Some(Op::Cld)
-            },
-            0xd => { // 0xfd -> std
+            }
+            0xd => {
+                // 0xfd -> std
                 Some(Op::Std)
-            },
-            0xe => { 
+            }
+            0xe => {
                 unimplemented!("0x{:02x}", b0) // grp4
-            },
+            }
             0xf => {
                 unimplemented!("0x{:02x}", b0) // grp5
             }
@@ -786,7 +774,7 @@ impl<'a> Decoder<'a> {
             0xc0 => self.next_c(b0),
             0xd0 => self.next_d(b0),
             0xe0 => self.next_e(b0),
-            0xf0 => self.next_f(b0), 
+            0xf0 => self.next_f(b0),
             _ => unreachable!(),
         }
     }
@@ -795,7 +783,7 @@ impl<'a> Decoder<'a> {
         self.sreg = None;
         self.size = 0;
         self.lock = false;
-        let op= self.next_o().unwrap(); // todo
+        let op = self.next_o().unwrap(); // todo
         Some(Inst {
             lock: self.lock,
             rep: self.rep,

@@ -1,12 +1,12 @@
 use std::cmp::Ordering;
 
-use tracing::{debug, trace};
+use tracing::{debug, trace, info};
 
-use lib8086::{Inst, Op, Sreg, Reg8, Reg16, Cc};
+use lib8086::{Cc, Inst, Op, Reg16, Reg8, Sreg};
 
 use crate::x86::MemAddrT;
 
-use super::{Cpu, Flags, OpSize, Decoder, inst_to_string};
+use super::{inst_to_string, Arg, Cpu, Decoder, Flags, OpSize};
 
 impl Cpu {
     pub fn next_inst(&mut self) -> Inst {
@@ -34,10 +34,14 @@ impl Cpu {
 
         trace!("exec: pc={:04x}", pc);
 
-        let mut ea = EA { ip, cpu: self, bytes: vec![] };
+        let mut ea = EA {
+            ip,
+            cpu: self,
+            bytes: vec![],
+        };
         let mut dec = Decoder::new(&mut ea);
 
-        let inst= dec.next_i().unwrap(); // !!! we have to do something about this
+        let inst = dec.next_i().unwrap(); // !!! we have to do something about this
 
         let bytes = ea.bytes;
         let bytes = bytes
@@ -88,7 +92,7 @@ impl Cpu {
                 let nv = v1.wrapping_sub(v2).wrapping_sub(cf);
                 self.write_arg(&a1, nv);
                 // todo: set flags
-            },
+            }
             Op::Sub(a1, a2) => {
                 let v1 = self.read_arg(&a1);
                 let v2 = self.read_arg(&a2);
@@ -129,6 +133,28 @@ impl Cpu {
                     Ordering::Greater => self.clear_flag(Flags::S),
                 }
             }
+            Op::Call(a1) => match a1 {
+                Arg::Imm16(rel16) => {
+                    info!(" - CALL rel={} [nip={:04x}]", rel16, nip);
+                    let sp = self.read_reg16(Reg16::SP);
+                    let ss = self.read_sreg(Sreg::SS);
+                    trace!(" - CALL: sp={:04x} <- 0x{:04x}", sp, nip);
+                    self.write_mem(Sreg::SS, sp, nip, OpSize::Word);
+                    self.write_reg16(Reg16::SP, sp.wrapping_sub(2));
+                    nip = nip.wrapping_add_signed(rel16);
+                    trace!(" - CALL: nip set to {:04x}", nip);
+                }
+                _ => panic!("unknown form of call"),
+            },
+            Op::Ret => {
+                let sp = self.read_reg16(Reg16::SP);
+                let nsp = sp.wrapping_add(2);
+                trace!(" - RET: nsp={:04x}", nsp);
+                nip = self.read_mem(Sreg::SS, nsp, OpSize::Word).unwrap();
+                trace!(" - RET nip={:04x}", nip);
+                self.write_reg16(Reg16::SP, nsp);
+                // if ret followed by a halt we may have debug infos
+            },
             Op::Push(a1) => {
                 let v = self.read_arg(&a1);
                 let sp = self.read_reg16(Reg16::SP);
@@ -136,18 +162,17 @@ impl Cpu {
                 trace!(" - PUSH: sp={:04x}", sp);
 
                 self.write_mem(Sreg::SS, sp, v, OpSize::Word);
-
                 self.write_reg16(Reg16::SP, sp.wrapping_sub(2));
             }
             Op::Pop(a1) => {
                 let sp = self.read_reg16(Reg16::SP);
-                trace!(" - POP: sp={:04x}", sp);
-                let v = self.read_mem(Sreg::SS, sp, OpSize::Word).unwrap();
+                let nsp = sp.wrapping_add(2);
+                trace!(" - POP: nsp={:04x}", sp);
+                let v = self.read_mem(Sreg::SS, nsp, OpSize::Word).unwrap();
                 trace!(" - POP {:?} <- {:04x}", a1, v);
                 self.write_arg(&a1, v as u16);
-                self.write_reg16(Reg16::SP, sp.wrapping_sub(2));
+                self.write_reg16(Reg16::SP, nsp);
             }
-            Op::Ret => todo!(),
             Op::Daa => todo!(),
             Op::Das => todo!(),
             Op::Aaa => {
@@ -175,7 +200,7 @@ impl Cpu {
                 }
                 ax = ax & 0xFF0F;
                 self.write_reg16(Reg16::AX, ax);
-            },
+            }
             Op::Aad(b1) => {
                 // todo: not sure if this is correct
                 let al = self.read_reg8(Reg8::AL);
@@ -183,14 +208,14 @@ impl Cpu {
                 let al = al + (ah * b1 as u8);
                 self.write_reg8(Reg8::AL, al);
                 self.write_reg8(Reg8::AH, 0);
-            },
+            }
             Op::Aam(b1) => {
                 // todo: not sure if this is correct
                 let al = self.read_reg8(Reg8::AL);
                 let ah = al / b1;
                 self.write_reg8(Reg8::AL, al % b1);
                 self.write_reg8(Reg8::AH, ah);
-            },
+            }
             Op::Aas => {
                 // todo: not sure if this is correct
                 let mut ax = self.read_reg16(Reg16::AX);
@@ -209,7 +234,7 @@ impl Cpu {
                     ax = ax & 0xFF0F;
                 }
                 self.write_reg16(Reg16::AX, ax);
-            },
+            }
             Op::Inc(_) => todo!(),
             Op::Dec(_) => todo!(),
             Op::Jcc(cc, disp) => {

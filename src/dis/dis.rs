@@ -91,6 +91,20 @@ pub fn inst_to_string(pc: MemAddrT, inst: &Inst) -> String {
             s.push_str(", ");
             s.push_str(arg_to_string(&a2).as_str());
         },
+        Op::Call(a1) => {
+            s.push_str("call ");
+            match a1 {
+                Arg::Imm16(rel16) => {
+                    s.push_str(format!("0x{:04}", 
+                        pc
+                            .wrapping_add(inst.size as u32)
+                            .wrapping_add_signed(*rel16 as i32)).as_str());
+                }
+                _ => {
+                    panic!("unknown form of call")
+                }
+            }
+        }
         Op::Push(a1) => {
             s.push_str("push ");
             s.push_str(arg_to_string(&a1).as_str());
