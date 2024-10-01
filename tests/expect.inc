@@ -105,7 +105,7 @@
         DD      %4
         DQ      %5
     %else
-        %error "unknown operand"
+        %error unknown operand %3
     %endif
     %endif
 %endmacro
