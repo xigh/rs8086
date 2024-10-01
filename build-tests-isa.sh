@@ -11,6 +11,7 @@ done
 
 for a in tests/isa/*.asm; do
     b=`echo $a | sed 's/\.asm/.bin/'`
+    rm -rf $b
     nasm -f bin -DDEBUG -Itests -o$b $a
     if [ ! -f "$b" ]; then
         echo "Error: Failed to compile $a. Output file $b does not exist."
