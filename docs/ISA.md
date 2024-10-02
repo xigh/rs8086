@@ -71,29 +71,29 @@ This flag is set if the last arithmetic operation generated an overflow.
 
 ## Instructions
 
-- [ ] [AAA](#aaa---ascii-adjust-after-addition) - ASCII adjust after addition
-- [ ] [AAD](#aad---ascii-adjust-after-division) - ASCII adjust after division
-- [ ] AAM - ASCII adjust after multiplication
-- [ ] AAS - ASCII adjust after subtraction
-- [ ] ADC - Add with carry
-- [ ] ADD - Add
-- [ ] AND - And
-- [ ] CALL - Call
-- [ ] CBW - Convert byte to word
-- [X] CLC - Clear carry flag
-- [X] CLD - Clear direction flag
-- [X] CLI - Clear interrupt flag
-- [X] CMC - Complement carry flag
-- [ ] CMP - Compare
+- [-] [AAA](#aaa---ascii-adjust-after-addition) - ASCII adjust after addition
+- [-] [AAD](#aad---ascii-adjust-after-division) - ASCII adjust after division
+- [-] AAM - ASCII adjust after multiplication
+- [-] AAS - ASCII adjust after subtraction
+- [-] ADC - Add with carry
+- [-] ADD - Add
+- [-] AND - And
+- [-] CALL - Call
+- [-] CBW - Convert byte to word
+- [-] CLC - Clear carry flag
+- [-] CLD - Clear direction flag
+- [-] CLI - Clear interrupt flag
+- [-] CMC - Complement carry flag
+- [-] CMP - Compare
 - [ ] CMPS - Compare strings
     - [ ] CMPSB - Compare strings byte
     - [ ] CMPSW - Compare strings word
-- [ ] CWD - Convert word to double word
+- [-] CWD - Convert word to double word
 - [ ] DAA - Decimal adjust after addition
 - [ ] DAS - Decimal adjust after subtraction
 - [ ] DEC - Decrement
 - [ ] DIV - Divide
-- [X] HLT - Halt
+- [-] HLT - Halt
 - [ ] IDIV
 - [ ] IMUL - Integer multiply
 - [ ] IN - Input
@@ -151,14 +151,14 @@ This flag is set if the last arithmetic operation generated an overflow.
     - [ ] MOVSW - Move string word
 - [ ] MUL - Multiply
 - [ ] NEG - Negate
-- [X] NOP - No operation
+- [-] NOP - No operation
 - [ ] NOT - Not
-- [ ] OR - Or
+- [-] OR - Or
 - [ ] OUT - Output
-- [ ] POP - Pop
+- [-] POP - Pop
 - [ ] POPA - Pop all
 - [ ] POPF - Pop flags
-- [ ] PUSH - Push
+- [-] PUSH - Push
 - [ ] PUSHA - Push all
 - [ ] PUSHF - Push flags
 - [ ] RCL - Rotate left through carry
@@ -168,7 +168,7 @@ This flag is set if the last arithmetic operation generated an overflow.
 - [ ] REPNE - Repeat if not equal
 - [ ] REPNZ - Repeat if not zero
 - [ ] REPZ - Repeat if zero
-- [ ] RET - Return
+- [-] RET - Return
 - [ ] RETF - Return from far
 - [ ] ROL - Rotate left
 - [ ] ROR - Rotate right
@@ -181,17 +181,17 @@ This flag is set if the last arithmetic operation generated an overflow.
     - [ ] SCASW - Scan string word
 - [ ] SHL - Shift logical left
 - [ ] SHR - Shift logical right
-- [X] (STC)[#stc---set-carry-flag] - Set carry flag
-- [X] STD - Set direction flag
-- [X] STI - Set interrupt flag
+- [-] (STC)[#stc---set-carry-flag] - Set carry flag
+- [-] STD - Set direction flag
+- [-] STI - Set interrupt flag
 - [ ] STOS - Store string
     - [ ] STOSB - Store string byte
     - [ ] STOSW - Store string word
-- [ ] SUB - Subtract
+- [-] SUB - Subtract
 - [ ] TEST - Test
 - [ ] XCHG - Exchange
 - [ ] XLATB - Translate byte
-- [ ] XOR - Exclusive or
+- [-] XOR - Exclusive or
 
 ## Instruction by kind
 

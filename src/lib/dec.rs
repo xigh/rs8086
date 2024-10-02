@@ -531,8 +531,16 @@ impl<'a> Decoder<'a> {
 
     fn next_9(&mut self, b0: u8) -> Option<Op> {
         match b0 & 0xf {
-            0x0 => Some(Op::Nop),
-            0x1..=0xf => unimplemented!("0x{:02x}", b0),
+            0x0 => Some(Op::Nop), // xchg ax, ax
+            0x1..=0x7 => unimplemented!("0x{:02} (XCHG)", b0),
+            0x8 => Some(Op::Cbw),
+            0x9 => Some(Op::Cwd),
+            0xA => unimplemented!("Call Ap"),
+            0xB => unimplemented!("Op::Wait"),
+            0xC => unimplemented!("Op::Pushf"),
+            0xD => unimplemented!("Op::Popf"),
+            0xE => unimplemented!("Op::Sahf"),
+            0xF => unimplemented!("Op::Lahf"),
             _ => unreachable!(),
         }
     }

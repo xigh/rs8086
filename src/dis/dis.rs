@@ -91,6 +91,12 @@ pub fn inst_to_string(pc: MemAddrT, inst: &Inst) -> String {
             s.push_str(", ");
             s.push_str(arg_to_string(&a2).as_str());
         },
+        Op::Cbw => {
+            s.push_str("cbw");
+        }
+        Op::Cwd => {
+            s.push_str("cwd");
+        }
         Op::Call(a1) => {
             s.push_str("call ");
             match a1 {

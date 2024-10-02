@@ -57,6 +57,9 @@ pub enum Op {
     In(Arg, Arg),
     Out(Arg, Arg),
 
+    Cbw,
+    Cwd,
+
     Hlt,
     Cmc,
     Clc,

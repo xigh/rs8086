@@ -272,6 +272,22 @@ impl Cpu {
                 self.write_sreg(Sreg::CS, seg);
                 nip = self.read_arg(&off);
             }
+            Op::Cbw => {
+                let al = self.read_reg8(Reg8::AL);
+                let signed_al = al as i8;
+                let signed_ax = signed_al as i16;
+                self.write_reg16(Reg16::AX, signed_ax as u16);
+            }
+            Op::Cwd => {
+                let ax = self.read_reg16(Reg16::AX);
+                let signed_ax = ax as i16;
+                let signed_dx_ax = signed_ax as i32;
+                let dx_ax = signed_dx_ax as u32;
+                let ax = (dx_ax & 0xffff) as u16;
+                let dx = (dx_ax >> 16) as u16;
+                self.write_reg16(Reg16::AX, ax);
+                self.write_reg16(Reg16::DX, dx);
+            }
             Op::Test(_, _) => todo!(),
             Op::Xchg(_, _) => todo!(),
             Op::Mov(a1, a2) => {
