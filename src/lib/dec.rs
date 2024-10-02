@@ -373,8 +373,8 @@ impl<'a> Decoder<'a> {
 
     fn next_5(&mut self, b0: u8) -> Option<Op> {
         match b0 & 0xf {
-            0x0..=0x7 => Some(Op::Push(Arg::Reg16(From::from(b0)))),
-            0x8..=0xf => Some(Op::Pop(Arg::Reg16(From::from(b0 & 0x7)))),
+            0x0..=0x7 => Some(Op::Push(Arg::Reg16(From::from(b0 & 0b111)))),
+            0x8..=0xf => Some(Op::Pop(Arg::Reg16(From::from(b0 & 0b111)))),
             _ => unreachable!(),
         }
     }
