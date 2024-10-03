@@ -10,3 +10,4 @@ _start:
 
         EXPECT  __FILE__, __LINE__, AL, 0x05
         EXPECT  __FILE__, __LINE__, ZF, 1
+        EXPECT  __FILE__, __LINE__, DONE

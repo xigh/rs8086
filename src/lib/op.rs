@@ -7,6 +7,18 @@ pub struct Inst {
     pub size: u8,
 }
 
+impl Default for Inst {
+    fn default() -> Self {
+        Self {
+            lock: false,
+            rep: None,
+            seg: None,
+            op: Op::Nop,
+            size: 0,
+        }
+    }
+}
+
 #[derive(Debug, Clone, Copy, PartialEq)]
 pub enum Rep {
     Rep,

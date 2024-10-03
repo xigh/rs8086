@@ -9,3 +9,4 @@ _start:
         HLT
 
         EXPECT  __FILE__, __LINE__, AX, 0x000F
+        EXPECT  __FILE__, __LINE__, DONE

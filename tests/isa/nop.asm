@@ -8,3 +8,4 @@ _start:
         HLT
 
         EXPECT  __FILE__, __LINE__, AX, 0
+        EXPECT  __FILE__, __LINE__, DONE

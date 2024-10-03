@@ -7,3 +7,4 @@ _start:
         HLT
 
         EXPECT  __FILE__, __LINE__, AX, 1 ; this is an error
+        EXPECT  __FILE__, __LINE__, DONE

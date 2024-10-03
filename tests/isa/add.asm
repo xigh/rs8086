@@ -20,7 +20,7 @@ _start:
         HLT
 
         EXPECT  __FILE__, __LINE__, BL, 3
-        ; todo: test flags too
+        EXPECT  __FILE__, __LINE__, DONE
 
 .test_m8_r8_val:
         DB      4
@@ -32,8 +32,9 @@ _start:
         HLT
 
         EXPECT  __FILE__, __LINE__, MB, .test_m8_r8_val, 5
-        ; todo: test flags too
+        EXPECT  __FILE__, __LINE__, DONE
 
+.todo:
         MOV AL, 0x05
         AND AL, 0x01
         HLT

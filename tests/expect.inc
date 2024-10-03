@@ -1,4 +1,4 @@
-%macro EXPECT   4-5
+%macro EXPECT   3-5
     ; start with line number
     DW      %2
 
@@ -104,6 +104,8 @@
         DB      "MQ"
         DD      %4
         DQ      %5
+    %elifidn %3, DONE
+        DB      "--"
     %else
         %error unknown operand %3
     %endif

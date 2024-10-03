@@ -1,15 +1,15 @@
 use std::cmp::Ordering;
 
-use tracing::{debug, trace, info};
+use tracing::{debug, info, trace};
 
 use lib8086::{Cc, Inst, Op, Reg16, Reg8, Sreg};
 
 use crate::x86::MemAddrT;
 
-use super::{inst_to_string, Arg, Cpu, Decoder, Flags, OpSize};
+use super::{Arg, Cpu, Decoder, Flags, OpSize};
 
 impl Cpu {
-    pub fn next_inst(&mut self) -> Inst {
+    pub fn next_inst(&mut self) -> (Inst, u32, Vec<u8>) {
         struct EA<'a> {
             ip: u16,
             cpu: &'a Cpu,
@@ -43,23 +43,12 @@ impl Cpu {
 
         let inst = dec.next_i().unwrap(); // !!! we have to do something about this
 
-        let bytes = ea.bytes;
-        let bytes = bytes
-            .iter()
-            .map(|b| format!("{:02x}", *b))
-            .collect::<Vec<String>>();
-        println!(
-            "{:06X} {:16} {}",
-            pc,
-            bytes.join(" "),
-            inst_to_string(pc, &inst)
-        );
-
-        inst
+        let bytes = ea.bytes;        
+        (inst, pc, bytes)
     }
 
     pub fn tick(&mut self) {
-        let inst = self.next_inst();
+        let (inst, _, _) = self.next_inst();
         debug!("tick: inst={:?}", inst);
 
         let mut nip = self.read_ip() + inst.size as u16;
@@ -147,14 +136,14 @@ impl Cpu {
                 _ => panic!("unknown form of call"),
             },
             Op::Ret => {
+                let nip_copy = nip;
                 let sp = self.read_reg16(Reg16::SP);
                 let nsp = sp.wrapping_add(2);
                 trace!(" - RET: nsp={:04x}", nsp);
                 nip = self.read_mem(Sreg::SS, nsp, OpSize::Word).unwrap();
                 trace!(" - RET nip={:04x}", nip);
                 self.write_reg16(Reg16::SP, nsp);
-                // if ret followed by a halt we may have debug infos
-            },
+            }
             Op::Push(a1) => {
                 let v = self.read_arg(&a1);
                 let sp = self.read_reg16(Reg16::SP);
@@ -306,7 +295,6 @@ impl Cpu {
                 let val = self.read_arg(&a2);
                 self.write_io(port, val, OpSize::Byte);
             }
-
             Op::Hlt => {
                 self.halted = true;
             }

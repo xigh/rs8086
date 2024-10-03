@@ -11,3 +11,4 @@ _start:
 
         EXPECT  __FILE__, __LINE__, AX, 0xC000
         EXPECT  __FILE__, __LINE__, DX, 0xFFFF
+        EXPECT  __FILE__, __LINE__, DONE

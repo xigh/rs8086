@@ -2,7 +2,9 @@ use std::path::PathBuf;
 
 use tracing::{debug, trace};
 
-use super::{Config, Cpu, Flags, OpSize, OpSizeT, Reg16, Reg8, Result, Sreg};
+use super::{
+    inst_to_string, Config, Cpu, Flags, Inst, Op, OpSize, OpSizeT, Reg16, Reg8, Result, Sreg,
+};
 
 #[derive(Default)]
 pub struct EmuOpts {
@@ -40,8 +42,28 @@ pub fn emulate(file: &str, opts: &EmuOpts) -> Result<()> {
     cpu.write_reg16(Reg16::BP, 0);
     cpu.write_reg16(Reg16::SP, 0);
 
+    let mut prev_op = Inst::default();
+    let mut prev_ip: u32 = 0;
+
     loop {
+        let mut found_hlt_at = None;
+
         if opts.test_mode && cpu.is_halted() {
+            let ip = cpu.read_ip();
+            let cs = Sreg::CS;
+            let ea = cpu.calc_ea(cs, ip);
+            found_hlt_at = Some(ea);
+        } else if opts.test_mode && prev_op.op == Op::Ret {
+            let hlt_ea = prev_ip + prev_op.size as u32;
+            // if ret followed by a halt we may have debug infos
+            if let Some(b0) = cpu.read_mem_ea(hlt_ea, OpSize::Byte) {
+                if b0 == 0xf4 {
+                    found_hlt_at = Some(hlt_ea);
+                }
+            }
+        }
+
+        if let Some(hlt_ea) = found_hlt_at {
             trace!("debug: cpu is halted, executing tests");
 
             let word_to_string = |w: u16| {
@@ -50,10 +72,10 @@ pub fn emulate(file: &str, opts: &EmuOpts) -> Result<()> {
                 format!("{}{}", first_char as char, second_char as char)
             };
 
-            let ip = cpu.read_ip();
-            let cs = Sreg::CS;
-            let mut ea = cpu.calc_ea(cs, ip);
             let mut file = String::new();
+            let mut ea = hlt_ea + 1;
+
+            debug!("after hlt ea: {:04x}", ea);
 
             'debug_loop: while let Some(line) = cpu.read_mem_ea(ea, OpSize::Word) {
                 ea += 2;
@@ -67,6 +89,9 @@ pub fn emulate(file: &str, opts: &EmuOpts) -> Result<()> {
 
                 let name = word_to_string(w);
                 match name.as_str() {
+                    "--" => {
+                        break 'debug_loop
+                    }
                     "^^" => {
                         let debug_ea = ea;
                         ea += 2;
@@ -209,6 +234,23 @@ pub fn emulate(file: &str, opts: &EmuOpts) -> Result<()> {
         if opts.dump_regs_each_step {
             cpu.dump_regs();
         }
+
+        let (inst, pc, bytes) = cpu.next_inst();
+        let bytes = bytes
+            .iter()
+            .map(|b| format!("{:02x}", *b))
+            .collect::<Vec<String>>();
+
+        println!(
+            "{:06X} {:16} {}",
+            pc,
+            bytes.join(" "),
+            inst_to_string(pc, &inst)
+        );
+
+        prev_ip = pc;
+        prev_op = inst;
+
         cpu.tick();
 
         if opts.wait_for_enter {

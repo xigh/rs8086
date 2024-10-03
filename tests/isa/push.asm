@@ -14,5 +14,4 @@ _start:
         HLT
 
         EXPECT  __FILE__, __LINE__, AX, 1
-
-; EXPECT AX == 0x01
+        EXPECT  __FILE__, __LINE__, DONE
